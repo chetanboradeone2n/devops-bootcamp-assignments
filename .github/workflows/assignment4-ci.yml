@@ -1,0 +1,28 @@
+name: Simple CI
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'assignment-4/app.py'
+      - 'assignment-4/requirements.txt'
+      - 'assignment-4/Dockerfile'
+      - 'assignment-4/tests/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: [self-hosted, macOS, X64]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify Python version
+        run: python3 --version
+
+      - name: Install dependencies
+        run: pip3 install -r  assignment-4/requirements.txt
+
+      - name: Run unit tests
+        run: python3 -m unittest discover -s assignment-4/tests

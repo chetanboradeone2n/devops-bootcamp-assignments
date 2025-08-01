@@ -1,0 +1,7 @@
+Using pip 21.2.4 from /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/site-packages/pip (python 3.9)
+Defaulting to user installation because normal site-packages is not writeable
+Requirement already satisfied: requests in /Users/one2n/Library/Python/3.9/lib/python/site-packages (from -r requirements.txt (line 2)) (2.32.4)
+Requirement already satisfied: charset_normalizer<4,>=2 in /Users/one2n/Library/Python/3.9/lib/python/site-packages (from requests->-r requirements.txt (line 2)) (3.4.2)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /Users/one2n/Library/Python/3.9/lib/python/site-packages (from requests->-r requirements.txt (line 2)) (2.5.0)
+Requirement already satisfied: certifi>=2017.4.17 in /Users/one2n/Library/Python/3.9/lib/python/site-packages (from requests->-r requirements.txt (line 2)) (2025.7.14)
+Requirement already satisfied: idna<4,>=2.5 in /Users/one2n/Library/Python/3.9/lib/python/site-packages (from requests->-r requirements.txt (line 2)) (3.10)
