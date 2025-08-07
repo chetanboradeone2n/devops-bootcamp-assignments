@@ -44,6 +44,7 @@ The API supports the following operations:
 
 ## Project Structure
 
+```
 assignment-1/
 ├── app.py 
 ├── requirements.txt 
@@ -53,6 +54,8 @@ assignment-1/
 ├── Makefile 
 └── migrate.sh
 └── README.md 
+
+```
 
 ## Project Structure Explanation :
 
