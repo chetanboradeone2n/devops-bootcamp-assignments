@@ -120,6 +120,7 @@ Why to Run the "make migrate" command?
 7.2 It also applies the schema from migrations/001_create_students_table.sql to create the students table. 
 
 8. Start the flask application
+```bash
 make run
 
 Desired Output after executing the "make run" command
@@ -135,6 +136,8 @@ INFO:werkzeug:Press CTRL+C to quit
 INFO:werkzeug: * Restarting with stat
 WARNING:werkzeug: * Debugger is active!
 INFO:werkzeug: * Debugger PIN: 126-069-887
+
+--- 
 
 9. Test flask api
 You can check the flask api by three ways.
