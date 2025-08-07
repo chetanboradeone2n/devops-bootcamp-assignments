@@ -140,28 +140,5 @@ You can check the flask api by three ways.
 9.3 Through Postman - Select the GET method and the type localhost:5000/api/v1 and then click on send.
 
 
-10. Now lets use different Requests via Postman
-
-## 📚 API Endpoints
-
-Open Postman and choose any type of request to perform the action.
-
-| Method | Endpoint               | Description                          |
-|--------|------------------------|--------------------------------------|
-| POST   | /v1/students           | Create a new student                 |
-| GET    | /v1/students           | Get a list of all students           |
-| GET    | /v1/students/{id}      | Get details of a specific student    |
-| PUT    | /v1/students/{id}      | Update an existing student's details |
-| DELETE | /v1/students/{id}      | Delete a student by ID               |
-
-
-  Example output if Student id is present in the database and has an ID of 3 associated to it.
- 
-{
-  "name": "Alice",
-  "age": 23,
-  "major": "Computer Science"
-  "id": "3"
-}
 
 
