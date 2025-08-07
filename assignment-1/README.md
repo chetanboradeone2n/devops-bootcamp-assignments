@@ -70,23 +70,24 @@ All endpoints are prefixed with `/api/v1/students`.
 - `POST /api/v1/students` – Add a new student (requires JSON body with `name`, `email`, and optional `age`).
 - `PUT /api/v1/students/<id>` – Update an existing student's info.
 - `DELETE /api/v1/students/<id>` – Delete a student.
-
-## Setup Instructions
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/chetanboradeone2n/devops-bootcamp-assignments.git
-   cd devops-bootcamp-assignments/assignment-1
+  
 
 # Flask Student API Setup Instructions
 
-## 1. Set Up the Virtual Environment and Install Dependencies
+## 1. Clone the Repository
+ ```bash
+   git clone https://github.com/chetanboradeone2n/devops-bootcamp-assignments.git
+   cd devops-bootcamp-assignments/assignment-1
+ ```
+
+## 2. Set Up the Virtual Environment and Install Dependencies
 
 ```bash
 make setup
 source venv/bin/activate # For macOS/Linux; use venv\Scripts\activate for Windows
 ```
 
-## 2. Configure Environment Variables
+## 3. Configure Environment Variables
 
 * Copy the .env.example file to .env:
 ```bash
@@ -103,7 +104,7 @@ DB_PASSWORD=your_password
 
 * Ensure .env is added to .gitignore.
 
-## 3. Run Database Migrations
+## 4. Run Database Migrations
 
 ```bash
 make migrate
@@ -111,7 +112,7 @@ make migrate
 
 * This command creates the database (if it doesn't exist) and applies the schema from migrations/001_create_students_table.sql to create the students table.
 
-## 4. Start the Flask Application
+## 5. Start the Flask Application
 
 ```bash
 make run
@@ -132,7 +133,7 @@ Press CTRL+C to quit
 * Debugger PIN: 126-069-887
 ```
 
-## 5. Makefile Commands for Reference
+## 6. Makefile Commands for Reference
 
 * `make setup` - Set up the virtual environment and install dependencies.
 * `make run` - Run the Flask application.
