@@ -38,29 +38,46 @@ The API supports the following operations:
 
 ## Project Structure
 
-```
-assignment-1/
-├── app.py
-├── requirements.txt
-├── migrations/
-│   └── 001_create_students_table.sql
-├── .env.example          # Template for environment variables (not committed)
-├── Makefile              # Automates setup, run, and migration tasks
-├── postman_collection.json  # Postman collection for API testing
-├── README.md
-└── venv/                 # Virtual environment (local, not committed)
-
 ``` 
+── app
+│   ├── controllers
+│   │   ├── __init__.py
+│   │   └── student_controller.py
+│   ├── models
+│   │   ├── __init__.py
+│   │   └── student.py
+│   ├── utils
+│   │   ├── __init__.py
+│   │   └── database.py
+│   └── views
+│       ├── __init__.py
+│       └── student_views.py
+├── main.py
+├── Makefile
+├── migrate.sh
+├── migrations
+│   └── 001_create_students_table.sql
+├── README.md
+├── requirements.txt
+├── Student_API_MVC_Collection.json
+└── venv
 
+```
 
 ## Project Structure Explanation:
-1. The `app.py` contains the main Flask application.
-2. The `requirements.txt` lists all dependencies needed to run the project.
-3. The `migrations/001_create_students_table.sql` file defines the database schema migration.
-4. The `.env.example` file provides a template for database credentials (copy to `.env` locally).
-5. The `Makefile` automates processes like setting up the virtual environment, running the Flask app, and applying migrations.
-6. The `postman_collection.json` file contains predefined API requests for testing.
-7. The `README.md` file provides setup and usage instructions.
+1. The `app/` directory contains the MVC components:
+   - `controllers/`: Contains `student_controller.py` that handles the business logic
+   - `models/`: Contains `student.py` that defines the data structure and database operations
+   - `views/`: Contains `student_views.py` that manages the API endpoints and request/response handling
+   - `utils/`: Contains `database.py` for database connection management
+2. The `main.py` is the entry point of the Flask application.
+3. The `requirements.txt` lists all dependencies needed to run the project.
+4. The `migrations/001_create_students_table.sql` file defines the database schema migration.
+5. The `.env.example` file provides a template for database credentials (copy to `.env` locally).
+6. The `Makefile` automates processes like setting up the virtual environment, running the Flask app, and applying migrations.
+7. The `migrate.sh` script handles the database migration process.
+8. The `Student_API_MVC_Collection.json` file contains predefined API requests for testing.
+9. The `README.md` file provides setup and usage instructions.
 
 ## API Endpoints Overview
 All endpoints are prefixed with `/api/v1/students`.
@@ -145,14 +162,50 @@ Press CTRL+C to quit
 
 You can test the API using the following methods:
 
-### 1. Command Line
-Use curl:
+### 1. Using Postman (Recommended)
+1. Import the `Student_API_MVC_Collection.json` file into Postman
+2. The collection includes pre-configured requests for all endpoints
+3. Example requests included:
+
+**Create Student (POST /api/v1/students)**
+```json
+{
+    "name": "abc xyz",
+    "email": "john@example.com",
+    "age": 20
+}
+```
+
+**Update Student (PUT /api/v1/students/{id})**
+```json
+{
+    "name": "mno pqr",
+    "email": "john.smith@example.com",
+    "age": 21
+}
+```
+
+### 2. Using cURL
+Here are some example cURL commands:
+
+**Health Check**
 ```bash
 curl http://localhost:5000/api/v1/healthcheck
 ```
 
-### 2. Browser
-Visit http://localhost:5000/api/v1/healthcheck.
+**Get All Students**
+```bash
+curl http://localhost:5000/api/v1/students
+```
 
-### 3. Postman
-Import the postman_collection.json file and use the predefined requests to test all endpoints (e.g., GET, POST, PUT, DELETE).
+**Create Student**
+```bash
+curl -X POST http://localhost:5000/api/v1/students \
+  -H "Content-Type: application/json" \
+  -d '{"name": "John Doe", "email": "john@example.com", "age": 20}'
+```
+
+### 3. Using Browser
+- Health Check: Visit http://localhost:5000/api/v1/healthcheck
+- Get All Students: Visit http://localhost:5000/api/v1/students
+- Note: Browser only supports GET requests directly. For POST, PUT, DELETE operations, use Postman or cURL.
