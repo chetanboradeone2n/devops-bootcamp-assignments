@@ -15,7 +15,7 @@ setup:
 
 # Run the Flask application
 run:
-	$(PYTHON) app.py
+	$(PYTHON) main.py
 
 # Apply database migrations
 migrate:
