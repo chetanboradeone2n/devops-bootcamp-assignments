@@ -6,7 +6,7 @@ from contextlib import contextmanager
 logger = logging.getLogger(__name__)
 
 class DatabaseManager:
-    """Database connection pool manager."""
+    """Simple database connection pool manager."""
     
     def __init__(self):
         self.db_pool = None
@@ -28,40 +28,28 @@ class DatabaseManager:
             raise
     
     @contextmanager
-    def get_db_connection(self):
-        """Context manager for database connections."""
+    def get_db_cursor(self):
+        """Context manager for database operations."""
         if not self.db_pool:
             raise RuntimeError("Database pool not initialized")
         
         conn = None
+        cur = None
         try:
             conn = self.db_pool.getconn()
-            yield conn
+            cur = conn.cursor()
+            yield conn, cur
+            conn.commit()
         except Exception as e:
             if conn:
                 conn.rollback()
             logger.error(f"Database operation error: {e}")
             raise
         finally:
+            if cur:
+                cur.close()
             if conn:
                 self.db_pool.putconn(conn)
-    
-    @contextmanager
-    def get_db_cursor(self):
-        """Context manager for database cursors."""
-        with self.get_db_connection() as conn:
-            cur = None
-            try:
-                cur = conn.cursor()
-                yield conn, cur
-                conn.commit()
-            except Exception as e:
-                conn.rollback()
-                logger.error(f"Database cursor error: {e}")
-                raise
-            finally:
-                if cur:
-                    cur.close()
 
 # Global database manager instance
 db_manager = DatabaseManager()
