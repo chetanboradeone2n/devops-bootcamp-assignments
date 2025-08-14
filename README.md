@@ -8,6 +8,10 @@
 - [Setup Instructions](#setup-instructions)
 - [Testing the API](#testing-the-api)
 
+# Assignment 2 - Containerizing the REST API
+
+This assignment builds upon Assignment 1 by containerizing the Student REST API using Docker and Docker Compose. The application now runs in containers, making it more portable and easier to deploy.
+
 # Assignment 1 - Simple REST API Web Server
 
 ## Problem Statement
@@ -28,6 +32,8 @@ The API supports the following operations:
 - **Python 3** – Main programming language
 - **Flask** – Web framework to build the REST API
 - **PostgreSQL** – Relational database to store student records
+- **Docker** – Containerization platform
+- **Docker Compose** – Container orchestration for local development
 - **PIP** – Python package manager
 - **GIT** – Version control system
 - **Makefile** – To automate tasks like running the server, migrations, etc.
@@ -60,6 +66,8 @@ The API supports the following operations:
 ├── README.md
 ├── requirements.txt
 ├── Student_API_MVC_Collection.json
+|── Dockerfile
+|── docker-compose.yml
 └── venv
 
 ```
@@ -77,7 +85,9 @@ The API supports the following operations:
 6. The `Makefile` automates processes like setting up the virtual environment, running the Flask app, and applying migrations.
 7. The `migrate.sh` script handles the database migration process.
 8. The `Student_API_MVC_Collection.json` file contains predefined API requests for testing.
-9. The `README.md` file provides setup and usage instructions.
+9. The `Dockerfile` provides the multi-stage dockerfile script, used for creating the container image.
+10. The `docker-compose.yml` file has script to start both the flask and the postgres container
+11. The `README.md` file provides setup and usage instructions.
 
 ## API Endpoints Overview
 All endpoints are prefixed with `/api/v1/students`.
@@ -92,47 +102,37 @@ All endpoints are prefixed with `/api/v1/students`.
 # Flask Student API Setup Instructions
 
 ## 1. Clone the Repository
- ```bash
-   git clone https://github.com/chetanboradeone2n/devops-bootcamp-assignments.git
-   cd devops-bootcamp-assignments/assignment-1
- ```
-
-## 2. Set Up the Virtual Environment and Install Dependencies
-
 ```bash
-make setup
-source venv/bin/activate # For macOS/Linux; use venv\Scripts\activate for Windows
+git clone https://github.com/chetanboradeone2n/devops-bootcamp-assignments.git
+cd devops-bootcamp-assignments
 ```
 
-## 3. Configure Environment Variables
-
-* Copy the .env.example file to .env:
-```bash
-cp .env.example .env
-```
-
-* Edit .env with your PostgreSQL credentials (do not commit .env):
-```text
-DB_HOST=localhost
-DB_NAME=mydatabase
-DB_USER=myuser
-DB_PASSWORD=your_password
-```
-
-* Ensure .env is added to .gitignore.
-
-## 4. Run Database Migrations
+## 2. Build and Run with Docker Compose
 
 ```bash
-make migrate
+docker-compose up --build -d
 ```
 
-* This command creates the database (if it doesn't exist) and applies the schema from migrations/001_create_students_table.sql to create the students table.
+This command will:
+- Build the Python application using multi-stage builds
+- Create and start the PostgreSQL container
+- Set up the database with initial migrations
+- Start the Flask application
 
-## 5. Start the Flask Application
+The following services will be available:
+- Flask API: http://localhost:5000
+- PostgreSQL: localhost:5432
 
+## 3. Verify Services
+
+Check if containers are running:
 ```bash
-make run
+docker-compose ps
+```
+
+Check application logs:
+```bash
+docker-compose logs flask-app
 ```
 
 * **Expected Output**:
@@ -150,13 +150,14 @@ Press CTRL+C to quit
 * Debugger PIN: 126-069-887
 ```
 
-## 6. Makefile Commands for Reference
+## Docker Commands Reference
 
-* `make setup` - Set up the virtual environment and install dependencies.
-* `make run` - Run the Flask application.
-* `make migrate` - Apply database migrations.
-* `make clean` - Remove the virtual environment.
-* `make help` - Show this help message.
+* `docker-compose up -d` - Start all services in detached mode
+* `docker-compose down` - Stop and remove all containers
+* `docker-compose logs` - View logs from all services
+* `docker-compose ps` - List running services
+* `docker-compose restart` - Restart services
+* `docker-compose build` - Rebuild services
 
 ## Testing the API
 
