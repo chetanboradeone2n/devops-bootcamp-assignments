@@ -155,5 +155,4 @@ class DatabaseManager:
             self.connection.close()
             print("Database connection closed")
 
-# Global database manager instance
 db_manager = DatabaseManager()
