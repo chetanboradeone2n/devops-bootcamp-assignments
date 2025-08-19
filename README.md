@@ -107,7 +107,7 @@ You’ll need **Python**, **PostgreSQL**, and other tools mentioned in the prequ
 
 ### Steps
 
-#### 1. Clone the Repository 
+### 1. Clone the Repository 
 ``` bash 
 git clone https://github.com/chetanboradeone2n/devops-bootcamp-assignments.git
 cd devops-bootcamp-assignments
