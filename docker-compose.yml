@@ -8,7 +8,6 @@ services:
       - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./migrations:/docker-entrypoint-initdb.d/
 
   flask-app:
     build: .
