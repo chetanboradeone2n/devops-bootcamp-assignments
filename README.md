@@ -98,7 +98,90 @@ All endpoints are prefixed with `/api/v1/students`.
 - `DELETE /api/v1/students/<id>` – Delete a student.
   
 
-# Flask Student API Setup Instructions
+# Flask Student API Setup Instructions - Local Setup & Docker Setup 
+
+## Local Setup (Without Docker)
+
+This section describes how to set up and run the **Flask Student API** on your local machine without Docker.  
+You’ll need **Python**, **PostgreSQL**, and other tools installed.
+
+### Steps
+
+#### 1. Clone the Repository 
+``` bash 
+git clone https://github.com/chetanboradeone2n/devops-bootcamp-assignments.git
+cd devops-bootcamp-assignments
+
+```
+### 2. Set Up a Virtual Environment
+
+Create and activate a Python virtual environment to isolate dependencies:
+``` bash
+python3 -m venv venv
+source venv/bin/activate   # On Windows: venv\Scripts\activate
+```
+
+### 3. Install Dependencies
+``` bash 
+pip install -r requirements.txt
+```
+
+## 4. Install PostgreSQL Client Libraries
+
+Make sure the PostgreSQL client library (libpq) is installed, as psycopg2 requires it:
+
+Ubuntu/Debian:
+``` bash
+sudo apt-get install -y libpq-dev
+```
+``` bash
+macOS:
+
+brew install postgresql
+```
+
+## 5. Set Up PostgreSQL Database
+
+Start your local PostgreSQL server:
+
+Create a database named student_db:
+``` bash 
+psql -U postgres -c "CREATE DATABASE student_db;"
+```
+
+## 6. Add the Environment Variables in the .env file
+
+``` bash
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=student_db
+DB_USER=postgres
+DB_PASSWORD=your_password
+```
+Replace your_password with your PostgreSQL user password.
+
+## 7. Apply Database Migrations
+
+Run the migration script to create the students table:
+``` bash
+bash migrate.sh
+or 
+make migrate
+```
+## 8. Run the Flask Application
+
+Start the Flask app using the Makefile or directly by using Python:
+```bash
+make run   # If Makefile has a run command
+Or:
+python main.py
+```
+
+The Flask app will start on http://localhost:5000.
+
+## With Docker & Docker Compose 
+
+### Steps
 
 ## 1. Clone the Repository
 
