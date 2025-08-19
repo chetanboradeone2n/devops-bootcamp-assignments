@@ -13,3 +13,11 @@ jobs:
 
       - name: Verifying the self-hosted runners
         run: echo " OK"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build API Image
+        run: |
+          docker-compose build
+
