@@ -103,7 +103,7 @@ All endpoints are prefixed with `/api/v1/students`.
 ## Local Setup (Without Docker)
 
 This section describes how to set up and run the **Flask Student API** on your local machine without Docker.  
-You’ll need **Python**, **PostgreSQL**, and other tools installed.
+You’ll need **Python**, **PostgreSQL**, and other tools mentioned in the prequisite section.
 
 ### Steps
 
@@ -118,7 +118,7 @@ cd devops-bootcamp-assignments
 Create and activate a Python virtual environment to isolate dependencies:
 ``` bash
 python3 -m venv venv
-source venv/bin/activate   # On Windows: venv\Scripts\activate
+source venv/bin/activate
 ```
 
 ### 3. Install Dependencies
@@ -130,13 +130,7 @@ pip install -r requirements.txt
 
 Make sure the PostgreSQL client library (libpq) is installed, as psycopg2 requires it:
 
-Ubuntu/Debian:
 ``` bash
-sudo apt-get install -y libpq-dev
-```
-``` bash
-macOS:
-
 brew install postgresql
 ```
 
