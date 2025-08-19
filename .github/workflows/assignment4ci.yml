@@ -1,0 +1,15 @@
+name: setup-a-ci-pipeline4
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ["self-hosted", "macOS", "ARM64"]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verifying the self-hosted runners
+        run: echo " OK"
