@@ -30,11 +30,11 @@ jobs:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
-      - name: Build API Image
-        run: |
-          docker-compose build
+ #     - name: Build API Image
+ #       run: |
+ #         docker-compose build
 
-      - name: Build Api container
-        run: |
-          docker-compose up -d
+ #     - name: Build Api container
+ #       run: |
+#         docker-compose up -d
 
