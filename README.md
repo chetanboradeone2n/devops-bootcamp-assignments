@@ -8,17 +8,16 @@
 - [Setup Instructions](#setup-instructions)
 - [Testing the API](#testing-the-api)
 
-# Assignment 2 - Containerizing the REST API
+# Assignment 2 & 3 - Containerizing the REST API
 
-This assignment builds upon Assignment 1 by containerizing the Student REST API using Docker and Docker Compose. The application now runs in containers, making it more portable and easier to deploy.
+The assignment 2 & 3 builds upon Assignment 1 by containerizing the Student REST API using Docker and Docker Compose. The application now runs in containers, making it more portable and easier to deploy.
 
-# Assignment 1 - Simple REST API Web Server
 
 ## Problem Statement
-In many applications, CRUD operations form the foundation of data management. This assignment aims to simulate a real-world scenario where you build a versioned, environment-configurable RESTful API to manage student data using a PostgreSQL database. This assignment focuses on creating a simple, yet extensible, REST API web server capable of performing CRUD operations on student records, with an emphasis on using environment variables for configuration and supporting database schema migrations.
+In many applications, CRUD operations form the foundation of data management. The assignment 2 & 3 aims to simulate a real-world scenario where you containerise a versioned, environment-configurable RESTful API to manage student data using a PostgreSQL database. This assignment focuses to containerize a simple, yet extensible, REST API web server capable of performing CRUD operations on student records, with an emphasis on using environment variables for configuration and supporting database schema migrations.
 
 ## What This Repository Solves
-This repository provides a solution for building and managing student data through a REST API interface. The backend is powered by Python Flask and connected to a PostgreSQL database. The API includes versioned endpoints (e.g., `/api/v1/`) for future scalability, supports schema migrations via SQL files, and uses environment variables for secure configuration. This solution can be easily extended to larger systems and can serve as a base for integrating authentication, authorization, and frontend interfaces.
+This repository provides a solution to containerise building and managing student data through a REST API interface. The backend is powered by Python Flask and connected to a PostgreSQL database. The API includes versioned endpoints (e.g., `/api/v1/`) for future scalability, supports schema migrations via SQL files, and uses environment variables for secure configuration. This solution can be easily extended to larger systems and can serve as a base for integrating authentication, authorization, and frontend interfaces.
 
 ## Features
 The API supports the following operations:
@@ -68,7 +67,7 @@ The API supports the following operations:
 ├── Student_API_MVC_Collection.json
 |── Dockerfile
 |── docker-compose.yml
-└── venv
+
 
 ```
 
@@ -102,6 +101,7 @@ All endpoints are prefixed with `/api/v1/students`.
 # Flask Student API Setup Instructions
 
 ## 1. Clone the Repository
+
 ```bash
 git clone https://github.com/chetanboradeone2n/devops-bootcamp-assignments.git
 cd devops-bootcamp-assignments
@@ -133,6 +133,7 @@ docker-compose ps
 Check application logs:
 ```bash
 docker-compose logs flask-app
+
 ```
 
 * **Expected Output**:
@@ -150,6 +151,7 @@ Press CTRL+C to quit
 * Debugger PIN: 126-069-887
 ```
 
+
 ## Docker Commands Reference
 
 * `docker-compose up -d` - Start all services in detached mode
@@ -158,6 +160,7 @@ Press CTRL+C to quit
 * `docker-compose ps` - List running services
 * `docker-compose restart` - Restart services
 * `docker-compose build` - Rebuild services
+
 
 ## Testing the API
 
