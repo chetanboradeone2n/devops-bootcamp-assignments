@@ -38,3 +38,6 @@ jobs:
 
       - name: Code linting
         run: ruff check --fix --exit-zero --quiet
+
+      - name: Docker hub login
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
