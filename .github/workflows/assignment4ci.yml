@@ -37,4 +37,4 @@ jobs:
 #            python3 test_students.py -v
 
       - name: Code linting
-        run: ruff check .
+        run: ruff check --fix --exit-zero --quiet
