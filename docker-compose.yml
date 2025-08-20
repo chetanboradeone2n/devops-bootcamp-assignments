@@ -14,6 +14,7 @@ services:
 
   flask-app:
     build: .
+    image: ${DOCKER_USERNAME}/devops-bootcamp-assignments-flask-app:latest
     container_name: student_api
     ports:
       - "5000:5000"
