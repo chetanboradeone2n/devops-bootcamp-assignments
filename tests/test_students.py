@@ -9,7 +9,7 @@ class TestStudentsAPI(unittest.TestCase):
         print(f"Response: {response.status_code}, {response.text}")
         print(f" Response JSON: {response.json()}")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['status'],'ok'})
+        self.assertEqual(response.json()['status'],'ok')
 
 if __name__ == '__main__':
     unittest.main()
