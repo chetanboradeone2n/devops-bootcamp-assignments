@@ -31,8 +31,8 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
       - name: Run the health check test
-        run: 
+        run: |
             pip install requests
             cd tests
-            python3 test_students.py
+            python3 test_students.py -v
           
