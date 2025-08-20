@@ -1,4 +1,5 @@
 import psycopg2
+from psycopg2 import pool
 import os
 from psycopg2.extras import RealDictCursor
 
