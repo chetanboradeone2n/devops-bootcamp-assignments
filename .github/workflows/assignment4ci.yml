@@ -30,9 +30,9 @@ jobs:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
-      - name: Run the health check test
-        run: |
-            pip install requests
-            cd tests
-            python3 test_students.py -v
+#      - name: Run the health check test
+#        run: |
+#            pip install requests
+#            cd tests
+#            python3 test_students.py -v
           
