@@ -35,4 +35,6 @@ jobs:
 #            pip install requests
 #            cd tests
 #            python3 test_students.py -v
-          
+
+      - name: Code linting
+        run: ruff check .
