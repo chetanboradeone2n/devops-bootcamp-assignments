@@ -22,7 +22,7 @@ class TestStudentsAPI(unittest.TestCase):
         self.assertEqual(get_response.status_code, 200)
         self.assertIsInstance(get_response.json(), dict)
 
-    def delete_student(self):
+    def test_delete_student(self):
         response = requests.delete('http://localhost:5000/api/v1/students/1')
         self.assertEqual(response.status_code, 204)
     
