@@ -23,3 +23,23 @@ env/
 
 # Local development
 .DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtualenv
+venv/
+.env
+
+# Ruff cache
+.ruff_cache/
+
+# Git
+.git/
+.gitignore
+
+# Others
+*.log
+
