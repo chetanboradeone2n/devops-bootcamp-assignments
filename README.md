@@ -8,13 +8,16 @@
 - [Setup Instructions](#setup-instructions)
 - [Testing the API](#testing-the-api)
 
-# Assignment 1 - Simple REST API Web Server
+# Assignment 2 & 3 - Containerizing the REST API
+
+The assignment 2 & 3 builds upon Assignment 1 by containerizing the Student REST API using Docker and Docker Compose. The application now runs in containers, making it more portable and easier to deploy.
+
 
 ## Problem Statement
-In many applications, CRUD operations form the foundation of data management. This assignment aims to simulate a real-world scenario where you build a versioned, environment-configurable RESTful API to manage student data using a PostgreSQL database. This assignment focuses on creating a simple, yet extensible, REST API web server capable of performing CRUD operations on student records, with an emphasis on using environment variables for configuration and supporting database schema migrations.
+In many applications, CRUD operations form the foundation of data management. The assignment 2 & 3 aims to simulate a real-world scenario where you containerise a versioned, environment-configurable RESTful API to manage student data using a PostgreSQL database. This assignment focuses to containerize a simple, yet extensible, REST API web server capable of performing CRUD operations on student records, with an emphasis on using environment variables for configuration and supporting database schema migrations.
 
 ## What This Repository Solves
-This repository provides a solution for building and managing student data through a REST API interface. The backend is powered by Python Flask and connected to a PostgreSQL database. The API includes versioned endpoints (e.g., `/api/v1/`) for future scalability, supports schema migrations via SQL files, and uses environment variables for secure configuration. This solution can be easily extended to larger systems and can serve as a base for integrating authentication, authorization, and frontend interfaces.
+This repository provides a solution to containerise building and managing student data through a REST API interface. The backend is powered by Python Flask and connected to a PostgreSQL database. The API includes versioned endpoints (e.g., `/api/v1/`) for future scalability, supports schema migrations via SQL files, and uses environment variables for secure configuration. This solution can be easily extended to larger systems and can serve as a base for integrating authentication, authorization, and frontend interfaces.
 
 ## Features
 The API supports the following operations:
@@ -28,6 +31,8 @@ The API supports the following operations:
 - **Python 3** – Main programming language
 - **Flask** – Web framework to build the REST API
 - **PostgreSQL** – Relational database to store student records
+- **Docker** – Containerization platform
+- **Docker Compose** – Container orchestration for local development
 - **PIP** – Python package manager
 - **GIT** – Version control system
 - **Makefile** – To automate tasks like running the server, migrations, etc.
@@ -60,7 +65,9 @@ The API supports the following operations:
 ├── README.md
 ├── requirements.txt
 ├── Student_API_MVC_Collection.json
-└── venv
+|── Dockerfile
+|── docker-compose.yml
+
 
 ```
 
@@ -77,7 +84,9 @@ The API supports the following operations:
 6. The `Makefile` automates processes like setting up the virtual environment, running the Flask app, and applying migrations.
 7. The `migrate.sh` script handles the database migration process.
 8. The `Student_API_MVC_Collection.json` file contains predefined API requests for testing.
-9. The `README.md` file provides setup and usage instructions.
+9. The `Dockerfile` provides the multi-stage dockerfile script, used for creating the container image.
+10. The `docker-compose.yml` file has script to start both the flask and the postgres container
+11. The `README.md` file provides setup and usage instructions.
 
 ## API Endpoints Overview
 All endpoints are prefixed with `/api/v1/students`.
@@ -89,50 +98,119 @@ All endpoints are prefixed with `/api/v1/students`.
 - `DELETE /api/v1/students/<id>` – Delete a student.
   
 
-# Flask Student API Setup Instructions
+# Flask Student API Setup Instructions - Local Setup & Docker Setup 
 
-## 1. Clone the Repository
- ```bash
-   git clone https://github.com/chetanboradeone2n/devops-bootcamp-assignments.git
-   cd devops-bootcamp-assignments/assignment-1
- ```
+## Local Setup (Without Docker)
 
-## 2. Set Up the Virtual Environment and Install Dependencies
+This section describes how to set up and run the **Flask Student API** on your local machine without Docker.  
+You’ll need **Python**, **PostgreSQL**, and other tools mentioned in the prequisite section.
 
-```bash
-make setup
-source venv/bin/activate # For macOS/Linux; use venv\Scripts\activate for Windows
+### Steps
+
+### 1. Clone the Repository 
+``` bash 
+git clone https://github.com/chetanboradeone2n/devops-bootcamp-assignments.git
+cd devops-bootcamp-assignments
+
+```
+### 2. Set Up a Virtual Environment
+
+Create and activate a Python virtual environment to isolate dependencies:
+``` bash
+python3 -m venv venv
+source venv/bin/activate
 ```
 
-## 3. Configure Environment Variables
-
-* Copy the .env.example file to .env:
-```bash
-cp .env.example .env
+### 3. Install Dependencies
+``` bash 
+pip install -r requirements.txt
 ```
 
-* Edit .env with your PostgreSQL credentials (do not commit .env):
-```text
+## 4. Install PostgreSQL Client Libraries
+
+Make sure the PostgreSQL client library (libpq) is installed, as psycopg2 requires it:
+
+``` bash
+brew install postgresql
+```
+
+## 5. Set Up PostgreSQL Database
+
+Start your local PostgreSQL server:
+
+Create a database named student_db:
+``` bash 
+psql -U postgres -c "CREATE DATABASE student_db;"
+```
+
+## 6. Add the Environment Variables in the .env file
+
+``` bash
 DB_HOST=localhost
-DB_NAME=mydatabase
-DB_USER=myuser
+DB_PORT=5432
+DB_NAME=student_db
+DB_USER=postgres
 DB_PASSWORD=your_password
 ```
+Replace your_password with your PostgreSQL user password.
 
-* Ensure .env is added to .gitignore.
+## 7. Apply Database Migrations
 
-## 4. Run Database Migrations
-
-```bash
+Run the migration script to create the students table:
+``` bash
+bash migrate.sh
+or 
 make migrate
 ```
+## 8. Run the Flask Application
 
-* This command creates the database (if it doesn't exist) and applies the schema from migrations/001_create_students_table.sql to create the students table.
+Start the Flask app using the Makefile or directly by using Python:
+```bash
+make run   # If Makefile has a run command
+Or:
+python main.py
+```
 
-## 5. Start the Flask Application
+The Flask app will start on http://localhost:5000.
+
+## With Docker & Docker Compose 
+
+### Steps
+
+## 1. Clone the Repository
 
 ```bash
-make run
+git clone https://github.com/chetanboradeone2n/devops-bootcamp-assignments.git
+cd devops-bootcamp-assignments
+```
+
+## 2. Build and Run with Docker Compose
+
+```bash
+docker-compose up --build -d
+```
+
+This command will:
+- Build the Python application using multi-stage builds
+- Create and start the PostgreSQL container
+- Set up the database with initial migrations
+- Start the Flask application
+
+The following services will be available:
+- Flask API: http://localhost:5000
+- PostgreSQL: localhost:5432
+
+## 3. Verify Services
+
+Check if containers are running:
+```bash
+docker-compose ps
+```
+
+Check application logs:
+```bash
+docker-compose logs flask-app
+
 ```
 
 * **Expected Output**:
@@ -150,13 +228,16 @@ Press CTRL+C to quit
 * Debugger PIN: 126-069-887
 ```
 
-## 6. Makefile Commands for Reference
 
-* `make setup` - Set up the virtual environment and install dependencies.
-* `make run` - Run the Flask application.
-* `make migrate` - Apply database migrations.
-* `make clean` - Remove the virtual environment.
-* `make help` - Show this help message.
+## Docker Commands Reference
+
+* `docker-compose up -d` - Start all services in detached mode
+* `docker-compose down` - Stop and remove all containers
+* `docker-compose logs` - View logs from all services
+* `docker-compose ps` - List running services
+* `docker-compose restart` - Restart services
+* `docker-compose build` - Rebuild services
+
 
 ## Testing the API
 
