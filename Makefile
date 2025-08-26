@@ -18,17 +18,17 @@ run:
 	$(PYTHON) main.py
 
 # Apply database migrations
-migrate:
-	@if [ ! -f .env ]; then echo "Error: .env file not found"; exit 1; fi
-	@export $(cat .env | xargs); \
-	if [ -z "$DB_HOST" ] || [ -z "$DB_USER" ] || [ -z "$DB_NAME" ] || [ -z "$DB_PASSWORD" ]; then \
-		echo "Error: Environment variables DB_HOST, DB_USER, DB_NAME, and DB_PASSWORD must be set"; exit 1; \
-	fi; \
-	echo "Creating database if it doesn't exist..."; \
-	psql -h "$DB_HOST" -U "$DB_USER" -d postgres -c "CREATE DATABASE IF NOT EXISTS $DB_NAME;" || { echo "Failed to create database"; exit 1; }; \
-	echo "Applying migration to create students table..."; \
-	psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" -f migrations/001_create_students_table.sql || { echo "Migration failed"; exit 1; }; \
-	echo "Migration completed successfully."
+# migrate:
+# 	@if [ ! -f .env ]; then echo "Error: .env file not found"; exit 1; fi
+# 	@export $(cat .env | xargs); \
+# 	if [ -z "$DB_HOST" ] || [ -z "$DB_USER" ] || [ -z "$DB_NAME" ] || [ -z "$DB_PASSWORD" ]; then \
+# 		echo "Error: Environment variables DB_HOST, DB_USER, DB_NAME, and DB_PASSWORD must be set"; exit 1; \
+# 	fi; \
+# 	echo "Creating database if it doesn't exist..."; \
+# 	psql -h "$DB_HOST" -U "$DB_USER" -d postgres -c "CREATE DATABASE IF NOT EXISTS $DB_NAME;" || { echo "Failed to create database"; exit 1; }; \
+# 	echo "Applying migration to create students table..."; \
+# 	psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" -f migrations/001_create_students_table.sql || { echo "Migration failed"; exit 1; }; \
+# 	echo "Migration completed successfully."
 
 # Clean up (remove virtual environment)
 clean:
