@@ -19,8 +19,8 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       
-      - name: Build and Start Services
-        run: docker-compose up -d --build
+      - name: Build API
+        run: make build
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
@@ -32,10 +32,9 @@ jobs:
           DB_NAME: ${{ secrets.DB_NAME }}
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      
+
       - name: Wait for application to be ready
         run: |
-          echo "Waiting for application to start..."
           for i in {1..30}; do
             if curl -s http://localhost:5000/api/v1/healthcheck > /dev/null; then
               echo "Application is ready!"
@@ -45,17 +44,21 @@ jobs:
             sleep 2
           done
 
-      - name: Run the health check test
-        run: |
-            pip install requests
-            cd tests
-            python3 test_students.py -v
+      - name: Run tests
+        run: make test
 
       - name: Code linting
-        run: ruff check --fix --exit-zero --quiet
+        run: make lint
 
-      - name: Docker hub login
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      - name: Docker login
+        run: make docker-login
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Image Push
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/devops-bootcamp-assignments-flask-app:latest
+      - name: Docker push
+        run: make docker-push
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      
+
