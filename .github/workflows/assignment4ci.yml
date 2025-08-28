@@ -3,7 +3,7 @@ name: setup-a-ci-pipeline4
 on:
   push:
     branches:
-      - setup-a-ci-pipeline4
+      - feature/setup-a-ci-pipeline-04
   workflow_dispatch:
 
 jobs:
