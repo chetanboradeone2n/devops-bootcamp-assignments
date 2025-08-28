@@ -11,7 +11,7 @@
 
 # Assignment 4 - Setup a CI pipeline
 
-Assignment 4 - Setup a CI pipeline builds on Assignment 3 - Setup one-click local development setup, by introducing CI/CD automation for the Student REST API. In this assignment a GitHub Actions workflow is implemented. The pipeline automates building the Docker image, running the application container, testing the API endpoints, performing code linting, and finally pushing the validated image to Docker Hub. This ensures consistent builds, automated quality checks, and streamlined delivery of the application.
+Assignment 4 - Setup a CI pipeline builds on Assignment 2 & 3 - Setup one-click local development setup, by introducing CI/CD automation for the Student REST API. In this assignment a GitHub Actions workflow is implemented. The pipeline automates building the Docker image, running the application container, testing the API endpoints, performing code linting, and finally pushing the validated image to Docker Hub. This ensures consistent builds, automated quality checks, and streamlined delivery of the application.
 
 ## Problem Statement
 In many projects, CRUD operations are the base for handling data. In Assignment 2 & 3, the Student REST API was containerized with Docker and Docker Compose, connected to a PostgreSQL database, and supported versioned endpoints and migrations. Assignment 4 builds on top of this by adding automation through GitHub Actions. The goal is to set up a CI pipeline that builds Docker images, runs containers, tests the API endpoints, performs code linting, and finally pushes the image to Docker Hub.
