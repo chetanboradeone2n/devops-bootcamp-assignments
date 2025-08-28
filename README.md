@@ -9,6 +9,7 @@
 - [CI/CD Pipeline](#cicd-pipeline)
 - [Testing the API](#testing-the-api)
 
+
 # Assignment 4 - Setup a CI pipeline
 
 Assignment 4 - Setup a CI pipeline builds on Assignment 2 & 3 - Setup one-click local development setup, by introducing CI/CD automation for the Student REST API. In this assignment a GitHub Actions workflow is implemented. The pipeline automates building the Docker image, running the application container, testing the API endpoints, performing code linting, and finally pushing the validated image to Docker Hub. This ensures consistent builds, automated quality checks, and streamlined delivery of the application.
@@ -18,6 +19,7 @@ In many projects, CRUD operations are the base for handling data. In Assignment 
 
 ## What This Repository Solves
 This repository demonstrates how to automate the build and test process for a REST API using GitHub Actions. It takes the Student API (Flask + PostgreSQL) and integrates CI steps like building the Docker image, spinning up containers, running endpoint tests, and linting the code. The workflow then pushes the tested and verified image to Docker Hub. This makes the application easier to maintain, portable, and ready for future deployments.
+
 
 ## Features
 The API supports the following operations:
@@ -73,9 +75,10 @@ The API supports the following operations:
 ├── README.md
 ├── requirements.txt
 ├── Student_API_MVC_Collection.json
+
 ├── Dockerfile
 ├── docker-compose.yml
-└── .env.example
+
 ```
 
 ## Project Structure Explanation:
@@ -110,6 +113,7 @@ All endpoints are prefixed with `/api/v1/students`.
 ## Local Setup (Without Docker)
 
 This section describes how to set up and run the **Flask Student API** on your local machine without Docker.  
+
 You'll need **Python**, **PostgreSQL**, and other tools mentioned in the prerequisite section.
 
 ### Steps
@@ -131,6 +135,7 @@ source venv/bin/activate
 ### 3. Install Dependencies
 ```bash 
 pip install -r requirements.txt
+
 ```
 
 ### 4. Install PostgreSQL Client Libraries
@@ -151,6 +156,7 @@ psql -U postgres -c "CREATE DATABASE student_db;"
 ### 6. Add the Environment Variables in the .env file
 
 ```bash
+
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=student_db
@@ -211,6 +217,7 @@ The following services will be available:
 Check if containers are running:
 ```bash
 docker-compose ps
+
 ```
 
 Check application logs:

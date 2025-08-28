@@ -1,4 +1,6 @@
 import psycopg2
+import os
+from psycopg2.extras import RealDictCursor
 from psycopg2 import pool
 import os
 from psycopg2.extras import RealDictCursor
@@ -58,6 +60,7 @@ class DatabaseManager:
         """Create a single connection"""
         try:
             print("Attempting to connect to database with settings:")
+
             print(f"Host: {self.host}, Port: {self.port}, DB: {self.database}, User: {self.user}")
             connection = psycopg2.connect(
                 host=self.host,

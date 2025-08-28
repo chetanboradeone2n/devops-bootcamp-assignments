@@ -42,6 +42,7 @@ ci: build test lint docker-login docker-push
 # 	$(PYTHON) main.py
 
 # # Apply database migrations
+
 # migrate:
 # 	@if [ ! -f .env ]; then echo "Error: .env file not found"; exit 1; fi
 # 	@export $(cat .env | xargs); \
@@ -53,7 +54,6 @@ ci: build test lint docker-login docker-push
 # 	echo "Applying migration to create students table..."; \
 # 	psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" -f migrations/001_create_students_table.sql || { echo "Migration failed"; exit 1; }; \
 # 	echo "Migration completed successfully."
-
 # # Clean up (remove virtual environment)
 # clean:
 # 	rm -rf $(VENV)
@@ -66,3 +66,4 @@ ci: build test lint docker-login docker-push
 # 	@echo "  make migrate  - Apply database migrations"
 # 	@echo "  make clean    - Remove the virtual environment"
 # 	@echo "  make help     - Show this help message"
+
