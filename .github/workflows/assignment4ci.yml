@@ -45,8 +45,8 @@ jobs:
             sleep 2
           done
 
-#      - name: Run tests
-#        run: make test
+      - name: Run tests
+        run: make test
 
       - name: Code linting
         run: make lint
