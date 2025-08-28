@@ -33,8 +33,9 @@ jobs:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
-      - name: Wait for application to be ready
+      - name: Wait for application and database to be ready
         run: |
+          echo "Waiting for application to start..."
           for i in {1..30}; do
             if curl -s http://localhost:5000/api/v1/healthcheck > /dev/null; then
               echo "Application is ready!"
@@ -43,6 +44,9 @@ jobs:
             echo "Attempt $i: Application not ready yet..."
             sleep 2
           done
+
+          echo "Running database migrations..."
+          docker-compose exec -T postgres psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f /migrations/001_create_students_table.sql || true
 
       - name: Run tests
         run: make test
