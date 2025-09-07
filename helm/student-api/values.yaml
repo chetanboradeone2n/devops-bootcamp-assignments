@@ -1,0 +1,7 @@
+image: chetanboradeone2n/devops-bootcamp-assignments-flask-app:latest
+db:
+  host: postgresql
+  port: "5432"
+  name: student_db
+  user: postgres
+  password: postgres123

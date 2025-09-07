@@ -1,0 +1,4 @@
+apiVersion: v2
+name: postgresql
+description: Simple PostgreSQL
+version: 1.0.0
