@@ -1,0 +1,110 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: student-api
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flask-app-config
+  namespace: student-api
+data:
+  DB_HOST: "postgres-service"
+  DB_PORT: "5432"
+  DB_NAME: "student_db"
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: flask-app-secret
+  namespace: student-api
+spec:
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+  target:
+    name: flask-app-secret
+  data:
+  - secretKey: DB_USER
+    remoteRef:
+      key: secret/database
+      property: username
+  - secretKey: DB_PASSWORD
+    remoteRef:
+      key: secret/database
+      property: password
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-app-deployment
+  namespace: student-api
+spec:
+  selector:
+    matchLabels:
+      app: flask-app
+  template:
+    metadata:
+      labels:
+        app: flask-app
+    spec:
+      initContainers:
+      - name: db-migration
+        image: chetanboradeone2n/devops-bootcamp-assignments-flask-app:latest
+        command: ['sleep', '10']
+      containers:
+      - name: flask-app
+        image: chetanboradeone2n/devops-bootcamp-assignments-flask-app:latest
+        env:
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: flask-app-config
+              key: DB_HOST
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: flask-app-config
+              key: DB_PORT
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: flask-app-config
+              key: DB_NAME
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: flask-app-secret
+              key: DB_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: flask-app-secret
+              key: DB_PASSWORD
+      nodeSelector:
+        node-type: "application"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-app-service
+  namespace: student-api
+spec:
+  selector:
+    app: flask-app
+  ports:
+  - port: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-app-nodeport
+  namespace: student-api
+spec:
+  selector:
+    app: flask-app
+  ports:
+  - port: 5000
+    nodePort: 30000
+  type: NodePort
