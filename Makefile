@@ -37,7 +37,7 @@ ci: build test lint docker-login docker-push
 # 	python3 -m venv $(VENV)
 # 	$(PIP) install -r requirements.txt
 
-# # Run the Flask application
+# # Run the Flask applicatio.n
 # run:
 # 	$(PYTHON) main.py
 
