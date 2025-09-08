@@ -1,8 +1,9 @@
-name: setup-a-ci-pipeline4
+name: ci-pipeline
 
 on:
   push:
     branches:
+      - main
       - feature/setup-a-ci-pipeline-04
   workflow_dispatch:
 
@@ -13,8 +14,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Verifying the self-hosted runners
-        run: echo " OK"
+#      - name: Verifying the self-hosted runners
+#        run: echo " OK"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
