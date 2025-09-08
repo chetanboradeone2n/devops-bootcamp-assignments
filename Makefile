@@ -8,7 +8,11 @@ PIP := $(VENV)/bin/pip
 # Default target
 all: setup run
 
-# Build API
+# Build API (CI-friendly - no env vars needed)
+build-ci:
+	docker build -t flask-app .
+
+# Build API (with docker-compose)
 build:
 	docker-compose up -d --build
 
