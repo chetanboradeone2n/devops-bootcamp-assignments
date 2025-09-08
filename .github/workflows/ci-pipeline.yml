@@ -13,15 +13,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
- #     - name: Set up Docker Buildx
- #       uses: docker/setup-buildx-action@v2
       
       - name: Build API
-        run: make build-ci
-
-      - name: Deploy for testing
         run: make build
+
+      - name: Deploy
+        run: make deploy
         env:
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
