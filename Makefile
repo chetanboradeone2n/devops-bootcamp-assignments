@@ -31,6 +31,7 @@ docker-login:
 
 # Docker build and push
 docker-push:
+	docker tag devops-bootcamp-assignments-flask-app:latest $(DOCKER_USERNAME)/devops-bootcamp-assignments-flask-app:latest
 	docker push $(DOCKER_USERNAME)/devops-bootcamp-assignments-flask-app:latest
 
 # All CI stages
