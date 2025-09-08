@@ -4,4 +4,3 @@ db:
   port: "5432"
   name: student_db
   user: postgres
-  password: postgres123

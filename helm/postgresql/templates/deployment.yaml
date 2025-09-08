@@ -13,9 +13,14 @@ spec:
     spec:
       containers:
       - name: postgresql
-        image: postgres:17
+        image: {{ .Values.postgres.image }}
         env:
         - name: POSTGRES_PASSWORD
-          value: postgres123
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_USER
+          value: {{ .Values.postgres.user }}
         - name: POSTGRES_DB
-          value: student_db
+          value: {{ .Values.postgres.database }}

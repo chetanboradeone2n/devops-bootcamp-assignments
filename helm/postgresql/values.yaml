@@ -1,1 +1,4 @@
-# Simple PostgreSQL values
+postgres:
+  image: postgres:17
+  database: student_db
+  user: postgres

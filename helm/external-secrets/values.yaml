@@ -1,1 +1,16 @@
-# External Secrets config
+image:
+  repository: ghcr.io/external-secrets/external-secrets
+  tag: v0.19.2
+
+replicaCount: 1
+
+serviceAccount:
+  name: external-secrets
+
+vault:
+  address: http://vault.vault.svc.cluster.local:8200
+  tokenSecretName: vault-token
+  rootToken: root
+
+clusterSecretStore:
+  name: vault-backend
