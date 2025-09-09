@@ -4,21 +4,7 @@ kind: Namespace
 metadata:
   name: vault
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: vault-config
-  namespace: vault
-data:
-  vault.hcl: |
-    storage "file" {
-      path = "/vault/data"
-    }
-    listener "tcp" {
-      address = "0.0.0.0:8200"
-      tls_disable = true
-    }
----
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
