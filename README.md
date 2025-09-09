@@ -123,7 +123,7 @@ All endpoints are now accessible through the Nginx reverse proxy:
   - Flask App 1: http://localhost:8081
   - Flask App 2: http://localhost:8082
 
-## API Endpoints Overview if Using assignment 4 and previous branches.
+## API Endpoints Overview
 All endpoints are prefixed with `/api/v1/students`.
 - `GET /api/v1/healthcheck` - Checks if the Flask application is running and returns a 200 status code with a JSON response (e.g., `{"status": "ok"}`).
 - `GET /api/v1/students` – Fetch all students.
