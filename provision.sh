@@ -8,4 +8,5 @@ sudo systemctl start docker
 sudo apt-get install docker-compose -y
 sudo docker-compose --version
 sudo apt-get install curl -y
+sudo apt-get install build-essential -y
 echo "success - Provisioning completed"

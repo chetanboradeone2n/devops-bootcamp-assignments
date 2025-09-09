@@ -8,16 +8,22 @@
 - [Setup Instructions](#setup-instructions)
 - [Testing the API](#testing-the-api)
 
-# Assignment 2 & 3 - Containerizing the REST API
+# Assignment 5 - Deploy the Flask Application On Bare Metal UTM Vagrant Using Nginx as Reverse Proxy
 
-The assignment 2 & 3 builds upon Assignment 1 by containerizing the Student REST API using Docker and Docker Compose. The application now runs in containers, making it more portable and easier to deploy.
+The 5 builds on the assignment 4. Here the flask application is deployed on bare metal UTM vagrant. Two api containers are created and nginx is used as a reverse proxy load balacer between the two flask application. Both of these flask applications are connected to the postgreSQL container. 
 
 
 ## Problem Statement
-In many applications, CRUD operations form the foundation of data management. The assignment 2 & 3 aims to simulate a real-world scenario where you containerise a versioned, environment-configurable RESTful API to manage student data using a PostgreSQL database. This assignment focuses to containerize a simple, yet extensible, REST API web server capable of performing CRUD operations on student records, with an emphasis on using environment variables for configuration and supporting database schema migrations.
+In many applications, CRUD operations form the foundation of data management. The assignment 5 aims to simulate a real-world scenario where you containerise a versioned, environment-configurable RESTful API to manage student data using a PostgreSQL database. This application uses UTM vagrant as a tool for virtulazation bare metal. 
 
 ## What This Repository Solves
-This repository provides a solution to containerise building and managing student data through a REST API interface. The backend is powered by Python Flask and connected to a PostgreSQL database. The API includes versioned endpoints (e.g., `/api/v1/`) for future scalability, supports schema migrations via SQL files, and uses environment variables for secure configuration. This solution can be easily extended to larger systems and can serve as a base for integrating authentication, authorization, and frontend interfaces.
+This repository demonstrates how to implement load balancing for a Flask REST API using Nginx as a reverse proxy. 
+
+The solution includes:
+- Two Flask application instances running on different ports (8081, 8082)
+- Nginx reverse proxy with round-robin load balancing
+- Containerized deployment using Docker Compose
+- High availability and horizontal scaling concepts
 
 ## Features
 The API supports the following operations:
@@ -40,6 +46,9 @@ The API supports the following operations:
 - **python-dotenv** – To manage environment variables
 - **SQL migration files** – For database schema changes
 - **Postman** – To test API endpoints (collection included)
+- **Nginx** – Reverse Proxy and Load Balancer
+- **UTM** – Application that allows to create Virtual Environment
+
 
 ## Project Structure
 
@@ -67,6 +76,9 @@ The API supports the following operations:
 ├── Student_API_MVC_Collection.json
 |── Dockerfile
 |── docker-compose.yml
+|── nginx.conf
+|── Vagrantfile
+|── provision.sh
 
 
 ```
@@ -86,7 +98,17 @@ The API supports the following operations:
 8. The `Student_API_MVC_Collection.json` file contains predefined API requests for testing.
 9. The `Dockerfile` provides the multi-stage dockerfile script, used for creating the container image.
 10. The `docker-compose.yml` file has script to start both the flask and the postgres container
-11. The `README.md` file provides setup and usage instructions.
+11. The `Vagranatfile` has instructions to virtual machines, create and cofigure network, allot memory, cpu, etc.
+12. The `provision.sh` has bash setup commands that installs docker, docker compose and make.
+13. The `nginx.conf` has the reverse proxy script that does load balancing between two api containers and lets them connect to the postgreSql
+14. The `README.md` file provides setup and usage instructions. 
+
+## Load Balanced API Access
+All endpoints are now accessible through the Nginx reverse proxy:
+- **Nginx Proxy**: http://localhost:8080
+- **Direct Access**:
+  - Flask App 1: http://localhost:8081
+  - Flask App 2: http://localhost:8082
 
 ## API Endpoints Overview
 All endpoints are prefixed with `/api/v1/students`.
