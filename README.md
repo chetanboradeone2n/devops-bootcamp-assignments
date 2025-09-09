@@ -410,7 +410,7 @@ curl -X POST http://localhost:8080/api/v1/students \
   -d '{"name": "abc", "email": "abc@example.com", "age": 20}'
 ```
 
-### 3. Using Browser (Assignment 5)
+### 3. Using Browser 
 - **Load Balanced Health Check**: Visit http://localhost:8080/api/v1/healthcheck
 - **Load Balanced Student List**: Visit http://localhost:8080/api/v1/students
 - **Direct Flask 1 Access**: Visit http://localhost:8081/api/v1/healthcheck
