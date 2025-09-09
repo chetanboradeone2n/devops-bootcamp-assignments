@@ -6,6 +6,9 @@
 - [Project Structure](#project-structure)
 - [API Endpoints Overview](#api-endpoints-overview)
 - [Setup Instructions](#setup-instructions)
+- [UTM Vagrant Deployment](#utm-vagrant-deployment)
+- [Assignment 5 Service URLs](#assignment-5-service-urls)
+- [Assignment 5 Testing](#assignment-5-testing)
 - [Testing the API](#testing-the-api)
 
 # Assignment 5 - Deploy the Flask Application On Bare Metal UTM Vagrant Using Nginx as Reverse Proxy
@@ -103,14 +106,14 @@ The API supports the following operations:
 13. The `nginx.conf` has the reverse proxy script that does load balancing between two api containers and lets them connect to the postgreSql
 14. The `README.md` file provides setup and usage instructions. 
 
-## Load Balanced API Access
+## Load Balanced API Access if Using UTM Vagrant
 All endpoints are now accessible through the Nginx reverse proxy:
 - **Nginx Proxy**: http://localhost:8080
 - **Direct Access**:
   - Flask App 1: http://localhost:8081
   - Flask App 2: http://localhost:8082
 
-## API Endpoints Overview
+## API Endpoints Overview if Using assignment 4 and previous branches.
 All endpoints are prefixed with `/api/v1/students`.
 - `GET /api/v1/healthcheck` - Checks if the Flask application is running and returns a 200 status code with a JSON response (e.g., `{"status": "ok"}`).
 - `GET /api/v1/students` – Fetch all students.
@@ -120,7 +123,7 @@ All endpoints are prefixed with `/api/v1/students`.
 - `DELETE /api/v1/students/<id>` – Delete a student.
   
 
-# Flask Student API Setup Instructions - Local Setup & Docker Setup 
+# Flask Student API Setup Instructions - Local Setup & Docker Setup  - Assignment 4 and Previous Branches
 
 ## Local Setup (Without Docker)
 
@@ -219,7 +222,9 @@ This command will:
 - Start the Flask application
 
 The following services will be available:
-- Flask API: http://localhost:5000
+- Flask API (Load Balanced): http://localhost:8080
+- Flask API Instance 1: http://localhost:8081
+- Flask API Instance 2: http://localhost:8082
 - PostgreSQL: localhost:5432
 
 ## 3. Verify Services
@@ -260,6 +265,160 @@ Press CTRL+C to quit
 * `docker-compose restart` - Restart services
 * `docker-compose build` - Rebuild services
 
+## For Setting Up UTM, Vagrant
+
+UTM Vagrant Deployment
+
+## Prerequisites
+- **UTM**: Virtual machine manager for macOS
+- **Vagrant**: Infrastructure automation tool
+- **Git**: Version control system
+
+## Vagrant Setup Steps
+
+### 1. Start Vagrant Environment
+
+```bash
+# To Start the Vagrant
+vagrant up
+```
+
+### 2. SSH into Vagrant VM
+
+```bash
+vagrant ssh
+```
+
+### 3. Navigate to Project Directory
+
+```bash
+cd /vagrant
+```
+
+### 4. Deploy Load Balanced Application
+
+```bash
+# do vagrant ssh and then run the below command
+docker-compose up --build -d
+```
+
+### 5. Verify All Services Running
+
+```bash
+# Check container status
+docker ps
+
+# Expected output: 4 containers running
+# - postgres (student_db)
+# - flask-app1 (student_api_1)
+# - flask-app2 (student_api_2)
+# - nginx (nginx_contanier_reverse_proxy)
+```
+
+### Vagrant Commands Reference:
+
+```bash
+vagrant up          # Start the virtual machine
+vagrant ssh         # SSH into the VM
+vagrant halt        # Stop the VM
+vagrant destroy     # Remove the VM completely
+vagrant status      # Check VM status
+vagrant reload      # Restart VM with new Vagrantfile config
+```
+
+## Assignment 5 Service URLs
+
+### Production Access (Load Balanced):
+
+• Main API Endpoint: http://localhost:8080
+• Health Check: http://localhost:8080/api/v1/healthcheck
+• Students API: http://localhost:8080/api/v1/students
+
+### Development/Direct Access:
+
+• Flask Instance 1: http://localhost:8081/api/v1/healthcheck
+• Flask Instance 2: http://localhost:8082/api/v1/healthcheck
+• PostgreSQL: localhost:5432
+
+### Docker Services:
+
+```bash
+# View all running services
+docker-compose ps
+
+# Service logs
+docker logs student_api_1                    # Flask instance 1
+docker logs student_api_2                    # Flask instance 2
+docker logs nginx_contanier_reverse_proxy    # Nginx load balancer
+docker logs student_db                       # PostgreSQL database
+```
+
+## Assignment 5 Testing
+
+### Load Balanced API Testing:
+
+#### 1. Health Check (Load Balanced)
+
+```bash
+curl http://localhost:8080/api/v1/healthcheck
+```
+
+#### 2. Test Load Balancing Distribution
+
+```bash
+# Make multiple requests to see round-robin in action
+for i in {1..6}; do
+  echo "Request $i:"
+  curl http://localhost:8080/api/v1/healthcheck
+  echo -e "\n"
+done
+```
+
+#### 3. Student CRUD Operations (Load Balanced)
+
+```bash
+# Get all students
+curl http://localhost:8080/api/v1/students
+
+# Create new student
+curl -X POST http://localhost:8080/api/v1/students \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Load Balanced User", "email": "lb@example.com", "age": 25}'
+
+# Get specific student
+curl http://localhost:8080/api/v1/students/1
+
+# Update student
+curl -X PUT http://localhost:8080/api/v1/students/1 \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Updated User", "email": "updated@example.com", "age": 26}'
+```
+
+### Load Balancing Verification:
+
+#### Monitor Nginx Access Logs:
+
+```bash
+# Watch nginx logs in real-time
+docker logs -f nginx_contanier_reverse_proxy
+```
+
+#### Monitor Individual Flask Instances:
+
+```bash
+docker logs -f student_api_1
+docker logs -f student_api_2
+```
+
+#### Performance Testing:
+
+```bash
+# Test with Apache Bench (if installed)
+ab -n 100 -c 10 http://localhost:8080/api/v1/healthcheck
+
+# Monitor resource usage
+docker stats
+```
 
 ## Testing the API
 
@@ -291,24 +450,118 @@ You can test the API using the following methods:
 ### 2. Using cURL
 Here are some example cURL commands:
 
-**Health Check**
+**Health Check (Load Balanced)**
 ```bash
-curl http://localhost:5000/api/v1/healthcheck
+curl http://localhost:8080/api/v1/healthcheck
 ```
 
-**Get All Students**
+**Get All Students (Load Balanced)**
 ```bash
-curl http://localhost:5000/api/v1/students
+curl http://localhost:8080/api/v1/students
 ```
 
-**Create Student**
+**Create Student (Load Balanced)**
 ```bash
-curl -X POST http://localhost:5000/api/v1/students \
+curl -X POST http://localhost:8080/api/v1/students \
   -H "Content-Type: application/json" \
   -d '{"name": "John Doe", "email": "john@example.com", "age": 20}'
 ```
 
-### 3. Using Browser
-- Health Check: Visit http://localhost:5000/api/v1/healthcheck
-- Get All Students: Visit http://localhost:5000/api/v1/students
-- Note: Browser only supports GET requests directly. For POST, PUT, DELETE operations, use Postman or cURL.
+### 3. Using Browser (Assignment 5)
+- **Load Balanced Health Check**: Visit http://localhost:8080/api/v1/healthcheck
+- **Load Balanced Student List**: Visit http://localhost:8080/api/v1/students
+- **Direct Flask 1 Access**: Visit http://localhost:8081/api/v1/healthcheck
+- **Direct Flask 2 Access**: Visit http://localhost:8082/api/v1/healthcheck
+
+**Note**: 
+- Browser only supports GET requests directly. For POST, PUT, DELETE operations, use Postman or cURL.
+- Refresh the load balanced URL multiple times to observe requests being distributed between Flask instances.
+
+---
+
+## Assignment 5 - Troubleshooting
+
+### Common Issues & Solutions:
+
+#### 1. Nginx 502 Bad Gateway
+**Problem**: Cannot access http://localhost:8080  
+**Symptoms**: "502 Bad Gateway" error in browser
+
+**Solutions**:
+```bash
+# Check if all containers are running
+docker ps
+
+# Restart nginx container
+docker-compose restart nginx
+
+# Verify nginx configuration is loaded
+docker exec nginx_contanier_reverse_proxy cat /etc/nginx/nginx.conf
+
+# Check nginx error logs
+docker logs nginx_contanier_reverse_proxy
+```
+
+#### 2. Load Balancing Not Working
+**Problem**: All requests go to same Flask instance  
+**Symptoms**: Only one Flask container shows activity in logs
+
+**Solutions**:
+```bash
+# Test individual Flask instances
+curl http://localhost:8081/api/v1/healthcheck
+curl http://localhost:8082/api/v1/healthcheck
+
+# Restart all services
+docker-compose down && docker-compose up -d
+
+# Check nginx upstream configuration
+docker exec nginx_contanier_reverse_proxy nginx -t
+```
+
+#### 3. Vagrant VM Issues
+**Problem**: VM won't start or SSH fails  
+**Symptoms**: `vagrant up` fails or `vagrant ssh` connection refused
+
+**Solutions**:
+```bash
+# Check VM status
+vagrant status
+
+# Restart VM
+vagrant halt && vagrant up
+
+# Rebuild VM completely (if corrupted)
+vagrant destroy && vagrant up
+```
+
+#### 4. Port Conflicts
+**Problem**: Ports 8080/8081/8082 already in use  
+**Symptoms**: "Port already allocated" errors
+
+**Solutions**:
+```bash
+# Find processes using ports
+lsof -ti:8080
+lsof -ti:8081
+lsof -ti:8082
+
+# Kill conflicting processes (replace PID)
+kill -9 <PID>
+
+# Or modify ports in docker-compose.yml
+```
+
+### Debug Commands:
+```bash
+# Container network inspection
+docker network ls
+docker network inspect devops-bootcamp-assignments_default
+
+# Container inspection
+docker inspect nginx_contanier_reverse_proxy
+docker inspect student_api_1
+
+# Resource monitoring
+docker stats --format "table {{.Container}}\t{{.CPUPerc}}\t{{.MemUsage}}"
+```
