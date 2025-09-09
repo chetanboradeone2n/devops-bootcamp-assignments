@@ -1,4 +1,4 @@
-.PHONY: run migrate clean help
+.PHONY: run migrate clean help build test lint docker-login docker-push ci
 
 # Variables
 VENV := venv
@@ -8,16 +8,46 @@ PIP := $(VENV)/bin/pip
 # Default target
 all: setup run
 
-# Set up the virtual environment and install dependencies
-setup:
-	python3 -m venv $(VENV)
-	$(PIP) install -r requirements.txt
+# Build Docker image only (CI-friendly)
+build:
+	docker build -t devops-bootcamp-assignments-flask-app .
 
-# Run the Flask application
-run:
-	$(PYTHON) main.py
+# Deploy containers for testing
+deploy:
+	docker-compose up -d --build
 
-# Apply database migrations
+# Run tests
+test:
+	pip install requests
+	cd tests && python3 test_students.py -v
+
+# Perform code linting
+lint:
+	ruff check --fix --exit-zero --quiet .
+
+# Docker login
+docker-login:
+	echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+
+# Docker build and push
+docker-push:
+	docker tag devops-bootcamp-assignments-flask-app:latest $(DOCKER_USERNAME)/devops-bootcamp-assignments-flask-app:latest
+	docker push $(DOCKER_USERNAME)/devops-bootcamp-assignments-flask-app:latest
+
+# All CI stages
+ci: build test lint docker-login docker-push
+
+# # Set up the virtual environment and install dependencies
+# setup:
+# 	python3 -m venv $(VENV)
+# 	$(PIP) install -r requirements.txt
+
+# # Run the Flask applicatio.n
+# run:
+# 	$(PYTHON) main.py
+
+# # Apply database migrations
+
 # migrate:
 # 	@if [ ! -f .env ]; then echo "Error: .env file not found"; exit 1; fi
 # 	@export $(cat .env | xargs); \
@@ -29,16 +59,16 @@ run:
 # 	echo "Applying migration to create students table..."; \
 # 	psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" -f migrations/001_create_students_table.sql || { echo "Migration failed"; exit 1; }; \
 # 	echo "Migration completed successfully."
+# # Clean up (remove virtual environment)
+# clean:
+# 	rm -rf $(VENV)
 
-# Clean up (remove virtual environment)
-clean:
-	rm -rf $(VENV)
+# # Help target to display available commands
+# help:
+# 	@echo "Available commands:"
+# 	@echo "  make setup    - Set up the virtual environment and install dependencies"
+# 	@echo "  make run      - Run the Flask application"
+# 	@echo "  make migrate  - Apply database migrations"
+# 	@echo "  make clean    - Remove the virtual environment"
+# 	@echo "  make help     - Show this help message"
 
-# Help target to display available commands
-help:
-	@echo "Available commands:"
-	@echo "  make setup    - Set up the virtual environment and install dependencies"
-	@echo "  make run      - Run the Flask application"
-	@echo "  make migrate  - Apply database migrations"
-	@echo "  make clean    - Remove the virtual environment"
-	@echo "  make help     - Show this help message"

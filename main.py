@@ -1,8 +1,8 @@
+import logging
+import os
 from flask import Flask
 from app.views.student_views import student_bp
 from app.utils.database import db_manager
-import logging
-import os
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -41,6 +41,6 @@ def internal_error(error):
     return {'error': 'Internal server error'}, 500
 
 if __name__ == "__main__":
-#    app.run(debug=True, host="0.0.0.0")
-    port=int(os.getenv("PORT"))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    app.run(debug=True, host="0.0.0.0")
+#    port=int(os.getenv("PORT"))
+#    app.run(host="0.0.0.0", port=port, debug=True)
