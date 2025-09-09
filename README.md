@@ -272,7 +272,6 @@ UTM Vagrant Deployment
 ## Prerequisites
 - **UTM**: Virtual machine manager for macOS
 - **Vagrant**: Infrastructure automation tool
-- **Git**: Version control system
 
 ## Vagrant Setup Steps
 
@@ -286,6 +285,7 @@ vagrant up
 ### 2. SSH into Vagrant VM
 
 ```bash
+# To get inside the Vagrant
 vagrant ssh
 ```
 
@@ -326,22 +326,6 @@ vagrant status      # Check VM status
 vagrant reload      # Restart VM with new Vagrantfile config
 ```
 
-## Assignment 5 Service URLs
-
-### Production Access (Load Balanced):
-
-• Main API Endpoint: http://localhost:8080
-• Health Check: http://localhost:8080/api/v1/healthcheck
-• Students API: http://localhost:8080/api/v1/students
-
-### Development/Direct Access:
-
-• Flask Instance 1: http://localhost:8081/api/v1/healthcheck
-• Flask Instance 2: http://localhost:8082/api/v1/healthcheck
-• PostgreSQL: localhost:5432
-
-### Docker Services:
-
 ```bash
 # View all running services
 docker-compose ps
@@ -351,47 +335,6 @@ docker logs student_api_1                    # Flask instance 1
 docker logs student_api_2                    # Flask instance 2
 docker logs nginx_contanier_reverse_proxy    # Nginx load balancer
 docker logs student_db                       # PostgreSQL database
-```
-
-## Assignment 5 Testing
-
-### Load Balanced API Testing:
-
-#### 1. Health Check (Load Balanced)
-
-```bash
-curl http://localhost:8080/api/v1/healthcheck
-```
-
-#### 2. Test Load Balancing Distribution
-
-```bash
-# Make multiple requests to see round-robin in action
-for i in {1..6}; do
-  echo "Request $i:"
-  curl http://localhost:8080/api/v1/healthcheck
-  echo -e "\n"
-done
-```
-
-#### 3. Student CRUD Operations (Load Balanced)
-
-```bash
-# Get all students
-curl http://localhost:8080/api/v1/students
-
-# Create new student
-curl -X POST http://localhost:8080/api/v1/students \
-  -H "Content-Type: application/json" \
-  -d '{"name": "Load Balanced User", "email": "lb@example.com", "age": 25}'
-
-# Get specific student
-curl http://localhost:8080/api/v1/students/1
-
-# Update student
-curl -X PUT http://localhost:8080/api/v1/students/1 \
-  -H "Content-Type: application/json" \
-  -d '{"name": "Updated User", "email": "updated@example.com", "age": 26}'
 ```
 
 ### Load Balancing Verification:
@@ -408,16 +351,6 @@ docker logs -f nginx_contanier_reverse_proxy
 ```bash
 docker logs -f student_api_1
 docker logs -f student_api_2
-```
-
-#### Performance Testing:
-
-```bash
-# Test with Apache Bench (if installed)
-ab -n 100 -c 10 http://localhost:8080/api/v1/healthcheck
-
-# Monitor resource usage
-docker stats
 ```
 
 ## Testing the API
@@ -464,7 +397,7 @@ curl http://localhost:8080/api/v1/students
 ```bash
 curl -X POST http://localhost:8080/api/v1/students \
   -H "Content-Type: application/json" \
-  -d '{"name": "John Doe", "email": "john@example.com", "age": 20}'
+  -d '{"name": "abc", "email": "abc@example.com", "age": 20}'
 ```
 
 ### 3. Using Browser (Assignment 5)
@@ -479,7 +412,7 @@ curl -X POST http://localhost:8080/api/v1/students \
 
 ---
 
-## Assignment 5 - Troubleshooting
+##  Troubleshooting
 
 ### Common Issues & Solutions:
 
