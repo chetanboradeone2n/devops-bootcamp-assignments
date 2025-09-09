@@ -1,0 +1,13 @@
+argo-cd:
+  server:
+    nodeSelector:
+      node-type: "dependent-service"
+    service:
+      type: NodePort
+    extraArgs:
+      - --insecure
+
+  controller:
+    nodeSelector:
+      node-type: "dependent-service"
+    
