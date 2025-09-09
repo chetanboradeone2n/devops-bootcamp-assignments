@@ -18,20 +18,6 @@ jobs:
       - name: Build API
         run: make build
 
-
-
-      - name: Wait for application and database to be ready
-        run: |
-          echo "Waiting for application to start..."
-          for i in {1..30}; do
-            if curl -s http://localhost:5000/api/v1/healthcheck > /dev/null; then
-              echo "Application is ready!"
-              break
-            fi
-            echo "Attempt $i: Application not ready yet..."
-            sleep 2
-          done
-
       - name: Run tests
         run: make test
 
