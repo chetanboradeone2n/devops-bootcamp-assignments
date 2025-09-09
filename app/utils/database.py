@@ -1,4 +1,6 @@
 import psycopg2
+import os
+from psycopg2.extras import RealDictCursor
 from psycopg2 import pool
 import os
 from psycopg2.extras import RealDictCursor
@@ -67,6 +69,7 @@ class DatabaseManager:
                 password=self.password,
                 cursor_factory=RealDictCursor
             )
+
             print(f"Successfully connected to database: {self.database}")
             return connection
         except Exception as error:

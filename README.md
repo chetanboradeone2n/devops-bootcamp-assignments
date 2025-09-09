@@ -65,25 +65,30 @@ The Student REST API supports the following CRUD operations:
 
 ## Project Structure
 
-``` 
-── app
-│   ├── controllers
-│   │   ├── __init__.py
-│   │   └── student_controller.py
-│   ├── models
-│   │   ├── __init__.py
-│   │   └── student.py
-│   ├── utils
-│   │   ├── __init__.py
-│   │   └── database.py
-│   └── views
-│       ├── __init__.py
-│       └── student_views.py
+```
+├── .github/
+│   └── workflows/
+│       └── assignment4ci.yml
+├── app/
+│   ├── controllers/
+│   │   ├── __init__.py
+│   │   └── student_controller.py
+│   ├── models/
+│   │   ├── __init__.py
+│   │   └── student.py
+│   ├── utils/
+│   │   ├── __init__.py
+│   │   └── database.py
+│   └── views/
+│       ├── __init__.py
+│       └── student_views.py
+├── migrations/
+│   └── 001_create_students_table.sql
+├── tests/
+│   └── test_students.py
 ├── main.py
 ├── Makefile
 ├── migrate.sh
-├── migrations
-│   └── 001_create_students_table.sql
 ├── README.md
 ├── requirements.txt
 ├── Student_API_MVC_Collection.json
@@ -97,7 +102,8 @@ The Student REST API supports the following CRUD operations:
 ```
 
 ## Project Structure Explanation:
-1. The `app/` directory contains the MVC components:
+1. The `.github/workflows/` directory contains the CI pipeline configuration
+2. The `app/` directory contains the MVC components:
    - `controllers/`: Contains `student_controller.py` that handles the business logic
    - `models/`: Contains `student.py` that defines the data structure and database operations
    - `views/`: Contains `student_views.py` that manages the API endpoints and request/response handling
@@ -123,15 +129,23 @@ All endpoints are now accessible through the Nginx reverse proxy:
   - Flask App 1: http://localhost:8081
   - Flask App 2: http://localhost:8082
 
+
 ## API Endpoints Overview
 All endpoints are prefixed with `/api/v1/students`.
-- `GET /api/v1/healthcheck` - Checks if the Flask application is running and returns a 200 status code with a JSON response (e.g., `{"status": "ok"}`).
-- `GET /api/v1/students` – Fetch all students.
-- `GET /api/v1/students/<id>` – Fetch a single student by ID.
-- `POST /api/v1/students` – Add a new student (requires JSON body with `name`, `email`, and optional `age`).
-- `PUT /api/v1/students/<id>` – Update an existing student's info.
-- `DELETE /api/v1/students/<id>` – Delete a student.
-  
+- `GET /api/v1/healthcheck` - Checks if the Flask application is running and returns a 200 status code with a JSON response (e.g., `{"status": "ok"}`)
+- `GET /api/v1/students` – Fetch all students
+- `GET /api/v1/students/<id>` – Fetch a single student by ID
+- `POST /api/v1/students` – Add a new student (requires JSON body with `name`, `email`, and optional `age`)
+- `PUT /api/v1/students/<id>` – Update an existing student's info
+- `DELETE /api/v1/students/<id>` – Delete a student
+
+# Flask Student API Setup Instructions - Local Setup & Docker Setup 
+
+## Local Setup (Without Docker)
+
+This section describes how to set up and run the **Flask Student API** on your local machine without Docker.  
+
+You'll need **Python**, **PostgreSQL**, and other tools mentioned in the prerequisite section.
 
 # Flask Student API Setup Instructions - Local Setup & Docker Setup  - Assignment 4 and Previous Branches
 
@@ -146,7 +160,6 @@ You’ll need **Python**, **PostgreSQL**, and other tools mentioned in the prequ
 ``` bash 
 git clone https://github.com/chetanboradeone2n/devops-bootcamp-assignments.git
 cd devops-bootcamp-assignments
-
 ```
 ### 2. Set Up a Virtual Environment
 
@@ -181,6 +194,7 @@ psql -U postgres -c "CREATE DATABASE student_db;"
 ## 6. Add the Environment Variables in the .env file
 
 ``` bash
+
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=student_db
@@ -224,7 +238,6 @@ cd devops-bootcamp-assignments
 ```bash
 docker-compose up --build -d
 ```
-
 This command will:
 - Build the Python application using multi-stage builds
 - Create and start the PostgreSQL container
@@ -232,6 +245,7 @@ This command will:
 - Start the Flask application
 
 The following services will be available:
+
 - Flask API (Load Balanced): http://localhost:8080
 - Flask API Instance 1: http://localhost:8081
 - Flask API Instance 2: http://localhost:8082
@@ -248,9 +262,15 @@ Check application logs:
 ```bash
 docker-compose logs flask-app
 
+
 ```
 
-* **Expected Output**:
+Check application logs:
+```bash
+docker-compose logs flask-app
+```
+
+**Expected Output**:
 ```text
 venv/bin/python3 app.py
 * Serving Flask app 'app'
@@ -264,7 +284,6 @@ Press CTRL+C to quit
 * Debugger is active!
 * Debugger PIN: 126-069-887
 ```
-
 
 ## Docker Commands Reference
 
@@ -409,7 +428,6 @@ curl -X POST http://localhost:8080/api/v1/students \
   -H "Content-Type: application/json" \
   -d '{"name": "abc", "email": "abc@example.com", "age": 20}'
 ```
-
 ### 3. Using Browser 
 - **Load Balanced Health Check**: Visit http://localhost:8080/api/v1/healthcheck
 - **Load Balanced Student List**: Visit http://localhost:8080/api/v1/students
