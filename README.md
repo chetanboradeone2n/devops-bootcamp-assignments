@@ -11,13 +11,13 @@
 - [Assignment 5 Testing](#assignment-5-testing)
 - [Testing the API](#testing-the-api)
 
-# Assignment 5 - Deploy the Flask Application On Bare Metal UTM Vagrant Using Nginx as Reverse Proxy
+#  Deploy the Flask Application On Bare Metal UTM Vagrant Using Nginx as Reverse Proxy
 
-The 5 builds on the assignment 4. Here the flask application is deployed on bare metal UTM vagrant. Two api containers are created and nginx is used as a reverse proxy load balacer between the two flask application. Both of these flask applications are connected to the postgreSQL container. 
+Assignment 5 builds on Assignment 4. Here the flask application is deployed on bare metal UTM vagrant. Two API containers are created and nginx is used as a reverse proxy load balancer between the two flask applications. Both of these flask applications are connected to the PostgreSQL container. 
 
 
 ## Problem Statement
-In many applications, CRUD operations form the foundation of data management. The assignment 5 aims to simulate a real-world scenario where you containerise a versioned, environment-configurable RESTful API to manage student data using a PostgreSQL database. This application uses UTM vagrant as a tool for virtulazation bare metal. 
+As applications grow and user traffic increases, a single server instance becomes a bottleneck and single point of failure. Assignment 5 aims to simulate a real-world scenario where you implement **load balancing** for a containerized RESTful API. The challenge is to distribute incoming requests across multiple Flask application instances using Nginx as a reverse proxy, while maintaining data consistency through a shared PostgreSQL database. This setup demonstrates high availability concepts and prepares the application for production-scale traffic using UTM Vagrant as a bare metal virtualization platform. 
 
 ## What This Repository Solves
 This repository demonstrates how to implement load balancing for a Flask REST API using Nginx as a reverse proxy. 
@@ -466,23 +466,6 @@ vagrant halt && vagrant up
 
 # Rebuild VM completely (if corrupted)
 vagrant destroy && vagrant up
-```
-
-#### 4. Port Conflicts
-**Problem**: Ports 8080/8081/8082 already in use  
-**Symptoms**: "Port already allocated" errors
-
-**Solutions**:
-```bash
-# Find processes using ports
-lsof -ti:8080
-lsof -ti:8081
-lsof -ti:8082
-
-# Kill conflicting processes (replace PID)
-kill -9 <PID>
-
-# Or modify ports in docker-compose.yml
 ```
 
 ### Debug Commands:
