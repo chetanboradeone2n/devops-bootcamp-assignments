@@ -49,10 +49,6 @@ spec:
       labels:
         app: flask-app
     spec:
-      initContainers:
-      - name: db-migration
-        image: chetanboradeone2n/devops-bootcamp-assignments-flask-app:latest
-        command: ['sleep', '10']
       containers:
       - name: flask-app
         image: chetanboradeone2n/devops-bootcamp-assignments-flask-app:latest
