@@ -29,12 +29,22 @@ The solution includes:
 - High availability and horizontal scaling concepts
 
 ## Features
-The API supports the following operations:
+
+### API Operations:
+The Student REST API supports the following CRUD operations:
 - Add a new student.
 - Get all students.
 - Get a student by ID.
 - Update existing student information.
 - Delete a student record.
+
+### Assignment 5 Infrastructure Features:
+- **Load Balancing**: Nginx reverse proxy distributes requests across multiple Flask instances
+- **High Availability**: If one Flask instance fails, requests continue through the other instance
+- **Bare Metal Virtualization**: Deployment on UTM Vagrant virtual machine
+- **Container Orchestration**: Docker Compose manages multi-service architecture
+- **Health Monitoring**: Individual instance health checks and logging
+- **Round-Robin Distribution**: Automatic request distribution across backend services
 
 ## Tools & Technologies Used
 - **Python 3** – Main programming language
