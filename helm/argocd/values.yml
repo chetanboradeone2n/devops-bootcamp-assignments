@@ -4,6 +4,8 @@ argo-cd:
       node-type: "dependent-service"
     service:
       type: NodePort
+      NodePortHttp: 30080
+      NodePortHttps: 30443
     extraArgs:
       - --insecure
 
