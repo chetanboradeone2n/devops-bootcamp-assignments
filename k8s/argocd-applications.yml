@@ -12,7 +12,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/chetanboradeone2n/devops-bootcamp-assignments.git
-    targetRevision: feature/setup-a-ci-pipeline-04
+    targetRevision: feature/one_click_deployment_using_argocd
     path: helm/student-api
     helm:
       valueFiles:
