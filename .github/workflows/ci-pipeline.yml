@@ -39,6 +39,8 @@ jobs:
   update-helm-values:
     needs: build
     runs-on: ["self-hosted", "macOS", "ARM64"]
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
