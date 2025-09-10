@@ -12,7 +12,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/chetanboradeone2n/devops-bootcamp-assignments.git
-    targetRevision: HEAD
+    targetRevision: feature/setup-a-ci-pipeline-04
     path: helm/student-api
     helm:
       valueFiles:
