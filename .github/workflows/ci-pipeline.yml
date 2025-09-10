@@ -35,10 +35,14 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
 
-  update-helm-values:
-    needs: build
-    runs-on: ["self-hosted", "macOS", "ARM64"]
-      steps:
-        - name: Update helm values with new image tag
-        - name: Commit and push changes  
+  # update-helm-values:
+  #   needs: build
+  #   runs-on: ["self-hosted", "macOS", "ARM64"]
+  #   steps:
+  #      - name: Checkout code
+  #        uses: actions/checkout@v4
+  #      - name: Update helm values with new image tag
+  #        run: 
+  #      - name: Commit and push changes
+  #        run: 
       
