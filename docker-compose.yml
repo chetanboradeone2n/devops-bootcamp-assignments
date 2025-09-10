@@ -15,10 +15,7 @@ services:
   flask-app1:
     build: .
     container_name: student_api_1
-    ports:
-      - "8081:8081"
     environment:
-      PORT: 8081
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
       DB_NAME: ${DB_NAME}
@@ -30,10 +27,7 @@ services:
   flask-app2:
     build: .
     container_name: student_api_2
-    ports:
-      - "8082:8082"
     environment:
-      PORT: 8082
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
       DB_NAME: ${DB_NAME}
