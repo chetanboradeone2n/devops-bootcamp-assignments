@@ -17,6 +17,9 @@ jobs:
       
       - name: Build API
         run: make build
+        env: 
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Run tests
         run: make test
