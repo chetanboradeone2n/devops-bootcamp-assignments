@@ -1,4 +1,4 @@
-image: chetanboradeone2n/devops-bootcamp-assignments-flask-app:<commit-sha>
+image: chetanboradeone2n/devops-bootcamp-assignments-flask-app:149acc3f5c4134212f18c593c603dab509abcde0
 db:
   host: postgresql
   port: "5432"
