@@ -34,14 +34,17 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
 
-  # update-helm-values:
-  #   needs: build
-  #   runs-on: ["self-hosted", "macOS", "ARM64"]
-  #   steps:
-  #      - name: Checkout code
-  #        uses: actions/checkout@v4
-  #      - name: Update helm values with new image tag
-  #        run: 
-  #      - name: Commit and push changes
-  #        run: 
-      
+  update-helm-values:
+    needs: build
+    runs-on: ["self-hosted", "macOS", "ARM64"]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Update helm values with new image tag
+        run: |
+          sed -i '' "s/<commit-sha>/${{ github.sha }}/g" helm/student-api/values.yaml
+
+      - name: Commit and push changes
+        run: | 
+          git config --global user.name "github-actions[bot]"
