@@ -1,0 +1,24 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: student-api
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/chetanboradeone2n/devops-bootcamp-assignments.git
+    targetRevision: HEAD
+    path: helm/student-api
+    helm:
+      valueFiles:
+      - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: student-api
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
