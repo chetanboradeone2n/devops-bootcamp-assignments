@@ -14,7 +14,7 @@ data:
   DB_PORT: "5432"
   DB_NAME: "student_db"
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: flask-app-secret
@@ -41,6 +41,7 @@ metadata:
   name: flask-app-deployment
   namespace: student-api
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: flask-app
@@ -49,6 +50,37 @@ spec:
       labels:
         app: flask-app
     spec:
+      initContainers:
+      - name: db-migration
+        image: chetanboradeone2n/devops-bootcamp-assignments-flask-app:latest
+        command: ["/bin/sh", "-c"]
+        args: ["./migrate.sh"]
+        env:
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: flask-app-config
+              key: DB_HOST
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: flask-app-config
+              key: DB_PORT
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: flask-app-config
+              key: DB_NAME
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: flask-app-secret
+              key: DB_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: flask-app-secret
+              key: DB_PASSWORD
       containers:
       - name: flask-app
         image: chetanboradeone2n/devops-bootcamp-assignments-flask-app:latest
