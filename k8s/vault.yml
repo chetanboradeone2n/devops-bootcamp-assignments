@@ -4,7 +4,49 @@ kind: Namespace
 metadata:
   name: vault
 ---
-
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: vault-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /data/vault
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vault-pvc
+  namespace: vault
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vault-config
+  namespace: vault
+data:
+  vault.hcl: |
+    storage "file" {
+      path = "/vault/data"
+    }
+    
+    listener "tcp" {
+      address = "0.0.0.0:8200"
+      tls_disable = 1
+    }
+    
+    api_addr = "http://0.0.0.0:8200"
+    ui = true
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,11 +64,29 @@ spec:
       containers:
       - name: vault
         image: hashicorp/vault:1.15.0
-        env:
-        - name: VAULT_DEV_ROOT_TOKEN_ID
-          value: "root-token"
         command: ["vault"]
-        args: ["server", "-dev", "-dev-listen-address=0.0.0.0:8200"]
+        args: ["server", "-config=/vault/config/vault.hcl"]
+        env:
+        - name: VAULT_ADDR
+          value: "http://127.0.0.1:8200"
+        volumeMounts:
+        - name: vault-config
+          mountPath: /vault/config
+        - name: vault-storage
+          mountPath: /vault/data
+        ports:
+        - containerPort: 8200
+          name: vault
+        securityContext:
+          capabilities:
+            add: ["IPC_LOCK"]
+      volumes:
+      - name: vault-config
+        configMap:
+          name: vault-config
+      - name: vault-storage
+        persistentVolumeClaim:
+          claimName: vault-pvc
       nodeSelector:
         node-type: "dependent-service"
 ---
