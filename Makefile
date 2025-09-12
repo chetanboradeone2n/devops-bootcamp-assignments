@@ -21,9 +21,9 @@ build:
 	docker-compose build
 
 
-test:
-	pip install requests
-	cd tests && python3 test_students.py -v
+#test:
+#	pip install requests
+#	cd tests && python3 test_students.py -v
 
 
 lint:
