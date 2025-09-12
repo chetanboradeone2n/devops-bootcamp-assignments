@@ -60,7 +60,6 @@ class DatabaseManager:
         """Create a single connection"""
         try:
             print("Attempting to connect to database with settings:")
-
             print(f"Host: {self.host}, Port: {self.port}, DB: {self.database}, User: {self.user}")
             connection = psycopg2.connect(
                 host=self.host,
@@ -70,6 +69,7 @@ class DatabaseManager:
                 password=self.password,
                 cursor_factory=RealDictCursor
             )
+
             print(f"Successfully connected to database: {self.database}")
             return connection
         except Exception as error:
