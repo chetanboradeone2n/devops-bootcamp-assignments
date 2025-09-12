@@ -16,7 +16,7 @@ build:
 test:
 	pip install requests
 	cd tests && python3 test_students.py -v
-
+  
 # Perform code linting
 lint:
 	ruff check --fix --exit-zero --quiet .

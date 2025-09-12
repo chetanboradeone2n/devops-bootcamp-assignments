@@ -17,6 +17,7 @@
 
 This demonstrates secret management by deploying the Flask Student API on Kubernetes with HashiCorp Vault and External Secrets Operator. The setup includes production-ready configurations with persistent storage, proper authentication, and automated secret synchronization.
 
+
 ## Kubernetes Problem Statement
 Modern cloud-native applications require secure secret management at scale. This implementation focuses on enterprise-grade secret management using HashiCorp Vault integrated with Kubernetes through the External Secrets Operator. The challenge is to deploy a Flask API with PostgreSQL backend while ensuring all sensitive data (database credentials, API keys) are securely managed through Vault's centralized secret store, eliminating hardcoded secrets from application manifests.
 
@@ -122,7 +123,6 @@ The Student REST API supports the following CRUD operations:
 
 
 ```
-
 ## Key Components:
 - **`app/`**: MVC architecture with controllers, models, views, and utilities
 - **`k8s/`**: Kubernetes manifests for Vault, External Secrets, database, and application deployment
@@ -270,6 +270,14 @@ You'll need **Python**, **PostgreSQL**, and other tools mentioned in the prerequ
 ## Local Setup (Without Docker)
 
 This section describes how to set up and run the **Flask Student API** on your local machine without Docker.  
+
+You'll need **Python**, **PostgreSQL**, and other tools mentioned in the prerequisite section.
+
+# Flask Student API Setup Instructions - Local Setup & Docker Setup  - Assignment 4 and Previous Branches
+
+## Local Setup (Without Docker)
+
+This section describes how to set up and run the **Flask Student API** on your local machine without Docker.  
 You’ll need **Python**, **PostgreSQL**, and other tools mentioned in the prequisite section.
 
 ### Steps
@@ -379,7 +387,6 @@ docker-compose ps
 Check application logs:
 ```bash
 docker-compose logs flask-app
-
 
 ```
 
@@ -580,7 +587,6 @@ docker exec nginx_contanier_reverse_proxy cat /etc/nginx/nginx.conf
 # Check nginx error logs
 docker logs nginx_contanier_reverse_proxy
 ```
-
 #### 2. Load Balancing Not Working
 **Problem**: All requests go to same Flask instance  
 **Symptoms**: Only one Flask container shows activity in logs
