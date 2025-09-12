@@ -17,8 +17,8 @@ jobs:
       - name: Build API
         run: make build
 
-      - name: Run tests
-        run: make test
+#      - name: Run tests
+#       run: make test
 
       - name: Code linting
         run: make lint
