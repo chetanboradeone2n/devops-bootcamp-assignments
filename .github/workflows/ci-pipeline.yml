@@ -3,7 +3,7 @@ name: ci-pipeline
 on:
   push:
     branches:
-      - main
+      - feature/deploy_rest_api_on_bare_metal-05
 
   workflow_dispatch:
 
