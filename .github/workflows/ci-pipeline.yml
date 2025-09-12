@@ -3,7 +3,6 @@ name: ci-pipeline
 on:
   push:
     branches:
-      - feature/setup-a-ci-pipeline-04
       - main
 
   workflow_dispatch:
