@@ -2,8 +2,8 @@
 
 all: deploy
 
-deploy:
-	docker-compose up -d --build
+#deploy:
+#	docker-compose up -d --build
 
 clean-deploy:
 	docker-compose down
@@ -29,12 +29,25 @@ test:
 lint:
 	ruff check --fix --exit-zero --quiet .
 
+# Build Docker image only (CI-friendly)
+build:
+	docker build -t devops-bootcamp-assignments-flask-app .
 
-help:
-	@echo "Available commands:"
-	@echo "  make deploy       - Deploy with Docker Compose"
-	@echo "  make clean-deploy - Clean up deployment" 
-	@echo "  make test-deploy  - Test deployment endpoints"
-	@echo "  make build        - Build containers"
-	@echo "  make test         - Run Python tests"
-	@echo "  make lint         - Run code linting"
+# Run tests
+test:
+	pip install requests
+	cd tests && python3 test_students.py -v
+
+# Perform code linting
+lint:
+	ruff check --fix --exit-zero --quiet .
+
+# Docker login
+docker-login:
+	echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+
+# Docker build and push
+docker-push:
+	docker tag devops-bootcamp-assignments-flask-app:latest $(DOCKER_USERNAME)/devops-bootcamp-assignments-flask-app:latest
+	docker push $(DOCKER_USERNAME)/devops-bootcamp-assignments-flask-app:latest
+
