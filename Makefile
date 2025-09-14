@@ -21,7 +21,7 @@ deploy:
 
 # Run tests
 test:
-	pip install requests
+	pip3 install requests
 	cd tests && python3 test_students.py -v
 
 # Clean up containers after testing
