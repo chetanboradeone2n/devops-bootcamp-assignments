@@ -1,4 +1,4 @@
-.PHONY: run migrate clean help build test lint docker-login docker-push ci k8s-deploy k8s-clean k8s-test
+.PHONY: run migrate clean help build test lint docker-login docker-push ci
 
 # Variables
 VENV := venv
@@ -8,15 +8,19 @@ PIP := $(VENV)/bin/pip
 # Default target
 all: setup run
 
-# Build API
+# Build Docker image only (CI-friendly)
 build:
+	docker build -t devops-bootcamp-assignments-flask-app .
+
+# Deploy containers for testing
+deploy:
 	docker-compose up -d --build
 
 # Run tests
 test:
 	pip install requests
 	cd tests && python3 test_students.py -v
-  
+
 # Perform code linting
 lint:
 	ruff check --fix --exit-zero --quiet .
@@ -27,34 +31,43 @@ docker-login:
 
 # Docker build and push
 docker-push:
+	docker tag devops-bootcamp-assignments-flask-app:latest $(DOCKER_USERNAME)/devops-bootcamp-assignments-flask-app:latest
 	docker push $(DOCKER_USERNAME)/devops-bootcamp-assignments-flask-app:latest
 
 # All CI stages
 ci: build test lint docker-login docker-push
 
-# Kubernetes deployment
-k8s-deploy:
-	kubectl apply -f k8s/
+# # Set up the virtual environment and install dependencies
+# setup:
+# 	python3 -m venv $(VENV)
+# 	$(PIP) install -r requirements.txt
 
-# Clean up Kubernetes resources
-k8s-clean:
-	kubectl delete -f k8s/ --ignore-not-found=true
+# # Run the Flask applicatio.n
+# run:
+# 	$(PYTHON) main.py
 
-# Test Kubernetes API
-k8s-test:
-	@echo "Testing API endpoints..."
-	@kubectl port-forward -n student-api service/flask-app-service 5000:5000 &
-	@sleep 3
-	@echo "Health check: $$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5000/api/v1/healthcheck)"
-	@echo "Get students: $$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5000/api/v1/students)"
-	@pkill -f "kubectl port-forward" || true
+# # Apply database migrations
 
-# Help
-help:
-	@echo "Available commands:"
-	@echo "  make k8s-deploy  - Deploy to Kubernetes"
-	@echo "  make k8s-clean   - Clean up Kubernetes resources"
-	@echo "  make k8s-test    - Test API endpoints"
-	@echo "  make build       - Build with Docker Compose"
-	@echo "  make test        - Run Python tests"
-	@echo "  make lint        - Run code linting"
+# migrate:
+# 	@if [ ! -f .env ]; then echo "Error: .env file not found"; exit 1; fi
+# 	@export $(cat .env | xargs); \
+# 	if [ -z "$DB_HOST" ] || [ -z "$DB_USER" ] || [ -z "$DB_NAME" ] || [ -z "$DB_PASSWORD" ]; then \
+# 		echo "Error: Environment variables DB_HOST, DB_USER, DB_NAME, and DB_PASSWORD must be set"; exit 1; \
+# 	fi; \
+# 	echo "Creating database if it doesn't exist..."; \
+# 	psql -h "$DB_HOST" -U "$DB_USER" -d postgres -c "CREATE DATABASE IF NOT EXISTS $DB_NAME;" || { echo "Failed to create database"; exit 1; }; \
+# 	echo "Applying migration to create students table..."; \
+# 	psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" -f migrations/001_create_students_table.sql || { echo "Migration failed"; exit 1; }; \
+# 	echo "Migration completed successfully."
+# # Clean up (remove virtual environment)
+# clean:
+# 	rm -rf $(VENV)
+
+# # Help target to display available commands
+# help:
+# 	@echo "Available commands:"
+# 	@echo "  make setup    - Set up the virtual environment and install dependencies"
+# 	@echo "  make run      - Run the Flask application"
+# 	@echo "  make migrate  - Apply database migrations"
+# 	@echo "  make clean    - Remove the virtual environment"
+# 	@echo "  make help     - Show this help message"
