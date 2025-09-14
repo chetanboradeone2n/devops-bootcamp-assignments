@@ -2,8 +2,24 @@ apiVersion: v1
 kind: Service
 metadata:
   name: vault
+  namespace: vault
 spec:
   selector:
     app: vault
   ports:
   - port: {{ .Values.vault.port }}
+    targetPort: {{ .Values.vault.port }}
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vault-headless
+  namespace: vault
+spec:
+  selector:
+    app: vault
+  ports:
+  - port: {{ .Values.vault.port }}
+    targetPort: {{ .Values.vault.port }}
+  clusterIP: None

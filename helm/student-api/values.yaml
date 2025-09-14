@@ -1,6 +1,9 @@
 image: chetanboradeone2n/devops-bootcamp-assignments-flask-app:latest
 db:
-  host: postgresql
+  host: postgres-service
   port: "5432"
   name: student_db
   user: postgres
+
+migrations:
+  image: postgres:17
