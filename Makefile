@@ -18,8 +18,11 @@ deploy:
 
 # Run tests
 test:
-	pip install requests
-	cd tests && python3 test_students.py -v
+    docker-compose up -d --build
+    sleep 15
+    pip install requests
+    cd tests && python3 test_students.py -v
+    docker-compose down
 
 # Perform code linting
 lint:
