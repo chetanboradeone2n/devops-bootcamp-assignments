@@ -11,6 +11,7 @@ all: setup run
 # Build Docker image only (CI-friendly)
 build:
 	docker build -t devops-bootcamp-assignments-flask-app .
+	sleep 30
 
 # Deploy containers for testing
 deploy:
@@ -18,11 +19,8 @@ deploy:
 
 # Run tests
 test:
-    docker-compose up -d --build
-    sleep 15
-    pip install requests
-    cd tests && python3 test_students.py -v
-    docker-compose down
+	pip install requests
+	cd tests && python3 test_students.py -v
 
 # Perform code linting
 lint:
