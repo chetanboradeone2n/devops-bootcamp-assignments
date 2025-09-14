@@ -1,5 +1,4 @@
-version: '3.8'
-
+version: '3.3'
 services:
   postgres:
     image: postgres:15
@@ -26,6 +25,8 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
     depends_on:
       - postgres
+    deploy:
+      replicas: 2
 
 volumes:
   postgres_data:

@@ -66,7 +66,5 @@ htmlcov/
 .coverage
 .coverage.*
 coverage.xml
-
-# Secrets (never commit these)
 *.token
 vault-tokens.txt

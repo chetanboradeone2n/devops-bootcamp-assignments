@@ -33,4 +33,3 @@ jobs:
         run: make docker-push
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      
