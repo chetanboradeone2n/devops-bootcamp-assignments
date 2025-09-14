@@ -19,7 +19,7 @@ deploy:
 
 # Run tests
 test:
-	pip install requests
+#	pip install requests
 	cd tests && python3 test_students.py -v
 
 # Perform code linting
