@@ -55,61 +55,19 @@ spec:
         image: chetanboradeone2n/devops-bootcamp-assignments-flask-app:latest
         command: ["/bin/sh", "-c"]
         args: ["./migrate.sh"]
-        env:
-        - name: DB_HOST
-          valueFrom:
-            configMapKeyRef:
-              name: flask-app-config
-              key: DB_HOST
-        - name: DB_PORT
-          valueFrom:
-            configMapKeyRef:
-              name: flask-app-config
-              key: DB_PORT
-        - name: DB_NAME
-          valueFrom:
-            configMapKeyRef:
-              name: flask-app-config
-              key: DB_NAME
-        - name: DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: flask-app-secret
-              key: DB_USER
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: flask-app-secret
-              key: DB_PASSWORD
+        envFrom:
+        - configMapRef:
+            name: flask-app-config
+        - secretRef:
+            name: flask-app-secret
       containers:
       - name: flask-app
         image: chetanboradeone2n/devops-bootcamp-assignments-flask-app:latest
-        env:
-        - name: DB_HOST
-          valueFrom:
-            configMapKeyRef:
-              name: flask-app-config
-              key: DB_HOST
-        - name: DB_PORT
-          valueFrom:
-            configMapKeyRef:
-              name: flask-app-config
-              key: DB_PORT
-        - name: DB_NAME
-          valueFrom:
-            configMapKeyRef:
-              name: flask-app-config
-              key: DB_NAME
-        - name: DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: flask-app-secret
-              key: DB_USER
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: flask-app-secret
-              key: DB_PASSWORD
+        envFrom:
+        - configMapRef:
+            name: flask-app-config
+        - secretRef:
+            name: flask-app-secret
       nodeSelector:
         node-type: "application"
         
