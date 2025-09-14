@@ -1,33 +1,77 @@
 ## Table of Contents
+- [Kubernetes Deployment with Vault Secret Management](#kubernetes-deployment-with-vault-secret-management)
 - [Problem Statement](#problem-statement)
 - [What This Repository Solves](#what-this-repository-solves)
 - [Features](#features)
 - [Tools & Technologies Used](#tools--technologies-used)
 - [Project Structure](#project-structure)
 - [API Endpoints Overview](#api-endpoints-overview)
-- [Setup Instructions](#setup-instructions)
-- [CI/CD Pipeline](#cicd-pipeline)
+- [Kubernetes Setup](#kubernetes-setup)
+- [Helm Chart Deployment](#helm-chart-deployment)
+- [Docker Compose Setup Instructions](#docker-compose-setup-instructions)
+- [UTM Vagrant Deployment](#utm-vagrant-deployment)
+- [Service URLs](#service-urls)
+- [Testing](#testing)
 - [Testing the API](#testing-the-api)
 
+# Kubernetes Deployment with Vault Secret Management
 
-# Assignment 4 - Setup a CI pipeline
+This demonstrates secret management by deploying the Flask Student API on Kubernetes with HashiCorp Vault and External Secrets Operator. The setup includes production-ready configurations with persistent storage, proper authentication, and automated secret synchronization.
 
-Assignment 4 - Setup a CI pipeline builds on Assignment 2 & 3 - Setup one-click local development setup, by introducing CI/CD automation for the Student REST API. In this assignment a GitHub Actions workflow is implemented. The pipeline automates building the Docker image, running the application container, testing the API endpoints, performing code linting, and finally pushing the validated image to Docker Hub. This ensures consistent builds, automated quality checks, and streamlined delivery of the application.
+
+## Kubernetes Problem Statement
+Modern cloud-native applications require secure secret management at scale. This implementation focuses on enterprise-grade secret management using HashiCorp Vault integrated with Kubernetes through the External Secrets Operator. The challenge is to deploy a Flask API with PostgreSQL backend while ensuring all sensitive data (database credentials, API keys) are securely managed through Vault's centralized secret store, eliminating hardcoded secrets from application manifests.
+
+## Kubernetes Features
+- ** Secret Management**: HashiCorp Vault with production configuration and persistent storage
+- **Automated Secret Sync**: External Secrets Operator automatically syncs secrets from Vault to Kubernetes
+- **Database Persistence**: PostgreSQL with persistent volumes for data durability
+- **Production Ready**: Vault runs in production mode with manual initialization and unsealing
+
+# Helm Chart Deployment
+
+Created Helm charts to deploy the Flask Student API on Kubernetes. Helm makes it easier to manage deployments by using templates instead of writing separate YAML files for each environment.
+
+
+## What's Included
+- **Flask API chart**: Main application deployment
+- **PostgreSQL chart**: Database with persistent storage
+- **Vault chart**: Secret management
+- **External Secrets chart**: Connects Vault to Kubernetes
+
+#  Deploy the Flask Application On Bare Metal UTM Vagrant Using Nginx as Reverse Proxy
+
+This builds on the previous containerized deployment. Here the flask application is deployed on bare metal UTM vagrant. Two API containers are created and nginx is used as a reverse proxy load balancer between the two flask applications. Both of these flask applications are connected to the PostgreSQL container.
 
 ## Problem Statement
-In many projects, CRUD operations are the base for handling data. In Assignment 2 & 3, the Student REST API was containerized with Docker and Docker Compose, connected to a PostgreSQL database, and supported versioned endpoints and migrations. Assignment 4 builds on top of this by adding automation through GitHub Actions. The goal is to set up a CI pipeline that builds Docker images, runs containers, tests the API endpoints, performs code linting, and finally pushes the image to Docker Hub.
+As applications grow and user traffic increases, a single server instance becomes a bottleneck and single point of failure. This implementation simulates a real-world scenario where you implement **load balancing** for a containerized RESTful API. The challenge is to distribute incoming requests across multiple Flask application instances using Nginx as a reverse proxy, while maintaining data consistency through a shared PostgreSQL database. This setup demonstrates high availability concepts and prepares the application for production-scale traffic using UTM Vagrant as a bare metal virtualization platform. 
 
 ## What This Repository Solves
-This repository demonstrates how to automate the build and test process for a REST API using GitHub Actions. It takes the Student API (Flask + PostgreSQL) and integrates CI steps like building the Docker image, spinning up containers, running endpoint tests, and linting the code. The workflow then pushes the tested and verified image to Docker Hub. This makes the application easier to maintain, portable, and ready for future deployments.
+This repository demonstrates how to implement load balancing for a Flask REST API using Nginx as a reverse proxy. 
 
+The solution includes:
+- Two Flask application instances running on different ports (8081, 8082)
+- Nginx reverse proxy with round-robin load balancing
+- Containerized deployment using Docker Compose
+- High availability and horizontal scaling concepts
 
 ## Features
-The API supports the following operations:
-- Add a new student
-- Get all students
-- Get a student by ID
-- Update existing student information
-- Delete a student record
+
+### API Operations:
+The Student REST API supports the following CRUD operations:
+- Add a new student.
+- Get all students.
+- Get a student by ID.
+- Update existing student information.
+- Delete a student record.
+
+### Infrastructure Features:
+- **Load Balancing**: Nginx reverse proxy distributes requests across multiple Flask instances
+- **High Availability**: If one Flask instance fails, requests continue through the other instance
+- **Bare Metal Virtualization**: Deployment on UTM Vagrant virtual machine
+- **Container Orchestration**: Docker Compose manages multi-service architecture
+- **Health Monitoring**: Individual instance health checks and logging
+- **Round-Robin Distribution**: Automatic request distribution across backend services
 
 ## Tools & Technologies Used
 - **Python 3** – Main programming language
@@ -35,6 +79,10 @@ The API supports the following operations:
 - **PostgreSQL** – Relational database to store student records
 - **Docker** – Containerization platform
 - **Docker Compose** – Container orchestration for local development
+- **Minikube Kubernetes** – Container orchestration platform for cloud-native deployment
+- **HashiCorp Vault** – Enterprise secret management and data protection
+- **External Secrets Operator** – Kubernetes operator for syncing secrets from external systems
+- **Helm** – Kubernetes package manager for templating and deployment management
 - **PIP** – Python package manager
 - **GIT** – Version control system
 - **Makefile** – To automate tasks like running the server, migrations, etc.
@@ -42,9 +90,9 @@ The API supports the following operations:
 - **python-dotenv** – To manage environment variables
 - **SQL migration files** – For database schema changes
 - **Postman** – To test API endpoints (collection included)
-- **GitHub Actions** – To automate the Continuous Integration process
-- **ruff** – To perform code linting
-- **Docker Hub** – Container registry for storing Docker images
+- **Nginx** – Reverse Proxy and Load Balancer
+- **UTM** – Application that allows to create Virtual Environment
+
 
 ## Project Structure
 
@@ -65,6 +113,16 @@ The API supports the following operations:
 │   └── views/
 │       ├── __init__.py
 │       └── student_views.py
+├── helm/
+│   ├── external-secrets/
+│   ├── postgresql/
+│   ├── student-api/
+│   └── vault/
+├── k8s/
+│   ├── application.yml
+│   ├── database.yml
+│   ├── external-secrets.yml
+│   └── vault.yml
 ├── migrations/
 │   └── 001_create_students_table.sql
 ├── tests/
@@ -75,29 +133,29 @@ The API supports the following operations:
 ├── README.md
 ├── requirements.txt
 ├── Student_API_MVC_Collection.json
+|── Dockerfile
+|── docker-compose.yml
+|── nginx.conf
+|── Vagrantfile
+|── provision.sh
 
-├── Dockerfile
-├── docker-compose.yml
 
 ```
+## Key Components:
+- **`app/`**: MVC architecture with controllers, models, views, and utilities
+- **`helm/`**: Helm charts for templated Kubernetes deployments
+- **`k8s/`**: Kubernetes manifests for Vault, External Secrets, database, and application deployment
+- **`migrations/`**: SQL database schema files
+- **`docker-compose.yml`**: Multi-container setup with load balancing
+- **`Vagrantfile`**: UTM Vagrant configuration for bare metal deployment 
 
-## Project Structure Explanation:
-1. The `.github/workflows/` directory contains the CI pipeline configuration
-2. The `app/` directory contains the MVC components:
-   - `controllers/`: Contains `student_controller.py` that handles the business logic
-   - `models/`: Contains `student.py` that defines the data structure and database operations
-   - `views/`: Contains `student_views.py` that manages the API endpoints and request/response handling
-   - `utils/`: Contains `database.py` for database connection management
-3. The `tests/` directory contains automated test scripts for API endpoints
-4. The `main.py` is the entry point of the Flask application
-5. The `requirements.txt` lists all dependencies needed to run the project
-6. The `migrations/001_create_students_table.sql` file defines the database schema migration
-7. The `.env.example` file provides a template for database credentials (copy to `.env` locally)
-8. The `Makefile` automates processes like setting up the virtual environment, running the Flask app, applying migrations, building Docker images, running tests, code linting, and pushing to Docker Hub
-9. The `migrate.sh` script handles the database migration process
-10. The `Student_API_MVC_Collection.json` file contains predefined API requests for testing
-11. The `Dockerfile` provides the multi-stage dockerfile script, used for creating the container image
-12. The `docker-compose.yml` file has script to start both the flask and the postgres container
+## Load Balanced API Access if Using UTM Vagrant
+All endpoints are now accessible through the Nginx reverse proxy:
+- **Nginx Proxy**: http://localhost:8080
+- **Direct Access**:
+  - Flask App 1: http://localhost:8081
+  - Flask App 2: http://localhost:8082
+
 
 ## API Endpoints Overview
 All endpoints are prefixed with `/api/v1/students`.
@@ -108,7 +166,166 @@ All endpoints are prefixed with `/api/v1/students`.
 - `PUT /api/v1/students/<id>` – Update an existing student's info
 - `DELETE /api/v1/students/<id>` – Delete a student
 
-# Flask Student API Setup Instructions - Local Setup & Docker Setup 
+# Kubernetes Setup
+
+This section covers the enterprise-grade Kubernetes deployment with HashiCorp Vault secret management.
+
+## Prerequisites
+- Kubernetes cluster (minikube, kind, or cloud provider)
+- kubectl configured to access your cluster
+- Helm (for installing External Secrets Operator)
+
+## Deployment Steps
+
+### 1. Install External Secrets Operator
+
+```bash
+# Add External Secrets Operator Helm repository
+helm repo add external-secrets https://charts.external-secrets.io
+```
+
+### 2. Deploy Vault
+
+```bash
+# Deploy Vault with production configuration
+kubectl apply -f k8s/vault.yml
+```
+
+### 4. Deploy Services
+
+```bash
+# Deploy all services
+kubectl apply -f k8s/external-secrets.yml
+kubectl apply -f k8s/database.yml
+kubectl apply -f k8s/application.yml
+
+
+## Access Services
+
+### Port Forward for Local Access
+
+```bash
+# Flask API
+kubectl port-forward svc/student-api-service 5000:5000
+
+# Vault UI
+kubectl port-forward svc/vault 8200:8200
+
+
+```
+
+### Service URLs
+- **Flask API**: http://localhost:5000/api/v1/students
+- **Health Check**: http://localhost:5000/api/v1/healthcheck  
+- **Vault UI**: http://localhost:8200
+
+## Verification
+
+### Check Pod Status
+```bash
+kubectl get pods
+```
+
+### Check External Secret Status
+```bash
+kubectl get externalsecrets
+kubectl get secrets database-secret
+```
+
+### Test API Endpoints
+```bash
+# Health check
+curl http://localhost:5000/api/v1/healthcheck
+
+# Get all students
+curl http://localhost:5000/api/v1/students
+```
+
+### Vault Operations
+```bash
+# Check Vault status
+kubectl exec vault-0 -- vault status
+
+# View secrets in Vault UI at http://localhost:8200
+# Login with root token
+```
+
+## Troubleshooting
+
+### Common Issues
+
+**External Secret Not Syncing**:
+```bash
+kubectl describe externalsecret database-external-secret
+kubectl logs -l app=external-secrets-operator -n external-secrets
+```
+
+**Vault Sealed**:
+```bash
+kubectl exec vault-0 -- vault status
+# If sealed, run unseal commands again
+```
+
+**Application Connection Issues**:
+```bash
+kubectl logs -l app=student-api
+kubectl describe pod -l app=student-api
+```
+
+# Helm Chart Deployment
+
+This section covers deployment using Helm charts for better configuration management and templating. Helm charts provide a more maintainable approach compared to raw Kubernetes manifests.
+
+## Prerequisites
+- minikube cluster running
+- Helm
+- kubectl configured to access your cluster
+
+## Available Helm Charts
+- **`student-api/`**: Main Flask application chart
+- **`postgresql/`**: Database chart with persistent storage
+- **`vault/`**: HashiCorp Vault chart
+- **`external-secrets/`**: External Secrets Operator chart
+
+## Deployment Steps
+
+### 1. Deploy Infrastructure Charts
+```bash
+# Deploy Vault
+helm install vault ./helm/vault
+
+# Deploy PostgreSQL  
+helm install postgresql ./helm/postgresql
+
+# Deploy External Secrets Operator
+helm install external-secrets ./helm/external-secrets
+```
+
+### 2. Deploy Application
+```bash
+# Deploy Student API
+helm install student-api ./helm/student-api
+```
+
+### 3. Verify Deployment
+```bash
+# Check all Helm releases
+helm list
+
+# Check pod status
+kubectl get pods
+```
+
+### 4. Access Services
+Same as Kubernetes Setup - use port-forwarding or NodePort services to access the Flask API.
+
+## Helm vs Raw Manifests
+- **Raw Manifests** (k8s/ directory): Direct Kubernetes YAML files
+- **Helm Charts** (helm/ directory): Templated, configurable deployments with values.yaml
+
+# Docker Compose Setup Instructions
+
+## Flask Student API Setup Instructions - Local Setup & Docker Setup 
 
 ## Local Setup (Without Docker)
 
@@ -116,46 +333,61 @@ This section describes how to set up and run the **Flask Student API** on your l
 
 You'll need **Python**, **PostgreSQL**, and other tools mentioned in the prerequisite section.
 
+# Flask Student API Setup Instructions - Local Setup & Docker Setup
+
+## Local Setup (Without Docker)
+
+This section describes how to set up and run the **Flask Student API** on your local machine without Docker.  
+
+You'll need **Python**, **PostgreSQL**, and other tools mentioned in the prerequisite section.
+
+# Flask Student API Setup Instructions - Local Setup & Docker Setup  - Assignment 4 and Previous Branches
+
+## Local Setup (Without Docker)
+
+This section describes how to set up and run the **Flask Student API** on your local machine without Docker.  
+You’ll need **Python**, **PostgreSQL**, and other tools mentioned in the prequisite section.
+
 ### Steps
 
 ### 1. Clone the Repository 
-```bash 
+``` bash 
 git clone https://github.com/chetanboradeone2n/devops-bootcamp-assignments.git
 cd devops-bootcamp-assignments
 ```
-
 ### 2. Set Up a Virtual Environment
 
 Create and activate a Python virtual environment to isolate dependencies:
-```bash
+``` bash
 python3 -m venv venv
 source venv/bin/activate
 ```
 
 ### 3. Install Dependencies
-```bash 
+``` bash 
 pip install -r requirements.txt
-
 ```
 
-### 4. Install PostgreSQL Client Libraries
+## 4. Install PostgreSQL Client Libraries
 
 Make sure the PostgreSQL client library (libpq) is installed, as psycopg2 requires it:
 
-```bash
+``` bash
 brew install postgresql
 ```
 
-### 5. Set Up PostgreSQL Database
+## 5. Set Up PostgreSQL Database
 
-Start your local PostgreSQL server and create a database named student_db:
-```bash 
+Start your local PostgreSQL server:
+
+Create a database named student_db:
+``` bash 
 psql -U postgres -c "CREATE DATABASE student_db;"
 ```
 
-### 6. Add the Environment Variables in the .env file
+## 6. Add the Environment Variables in the .env file
 
-```bash
+``` bash
 
 DB_HOST=localhost
 DB_PORT=5432
@@ -165,21 +397,20 @@ DB_PASSWORD=your_password
 ```
 Replace your_password with your PostgreSQL user password.
 
-### 7. Apply Database Migrations
+## 7. Apply Database Migrations
 
 Run the migration script to create the students table:
-```bash
+``` bash
 bash migrate.sh
-# or 
+or 
 make migrate
 ```
-
-### 8. Run the Flask Application
+## 8. Run the Flask Application
 
 Start the Flask app using the Makefile or directly by using Python:
 ```bash
 make run   # If Makefile has a run command
-# Or:
+Or:
 python main.py
 ```
 
@@ -189,19 +420,18 @@ The Flask app will start on http://localhost:5000.
 
 ### Steps
 
-### 1. Clone the Repository
+## 1. Clone the Repository
 
 ```bash
 git clone https://github.com/chetanboradeone2n/devops-bootcamp-assignments.git
 cd devops-bootcamp-assignments
 ```
 
-### 2. Build and Run with Docker Compose
+## 2. Build and Run with Docker Compose
 
 ```bash
 docker-compose up --build -d
 ```
-
 This command will:
 - Build the Python application using multi-stage builds
 - Create and start the PostgreSQL container
@@ -209,14 +439,22 @@ This command will:
 - Start the Flask application
 
 The following services will be available:
-- Flask API: http://localhost:5000
+
+- Flask API (Load Balanced): http://localhost:8080
+- Flask API Instance 1: http://localhost:8081
+- Flask API Instance 2: http://localhost:8082
 - PostgreSQL: localhost:5432
 
-### 3. Verify Services
+## 3. Verify Services
 
 Check if containers are running:
 ```bash
 docker-compose ps
+```
+
+Check application logs:
+```bash
+docker-compose logs flask-app
 
 ```
 
@@ -242,91 +480,100 @@ Press CTRL+C to quit
 
 ## Docker Commands Reference
 
-- `docker-compose up -d` - Start all services in detached mode
-- `docker-compose down` - Stop and remove all containers
-- `docker-compose logs` - View logs from all services
-- `docker-compose ps` - List running services
-- `docker-compose restart` - Restart services
-- `docker-compose build` - Rebuild services
+* `docker-compose up -d` - Start all services in detached mode
+* `docker-compose down` - Stop and remove all containers
+* `docker-compose logs` - View logs from all services
+* `docker-compose ps` - List running services
+* `docker-compose restart` - Restart services
+* `docker-compose build` - Rebuild services
 
-## CI/CD Pipeline
+## For Setting Up UTM, Vagrant
 
-This project implements a comprehensive CI/CD pipeline using GitHub Actions that automatically builds, tests, and deploys the Student API.
+UTM Vagrant Deployment
 
-### Pipeline Overview
+## Prerequisites
+- **UTM**: Virtual machine manager for macOS
+- **Vagrant**: Infrastructure automation tool
 
-The CI pipeline consists of the following stages:
-1. **Build API** - Sets up the environment and builds the Docker containers
-2. **Run Tests** - Executes automated API endpoint tests
-3. **Perform Code Linting** - Checks code quality using ruff
-4. **Docker Login** - Authenticates with Docker Hub
-5. **Docker Build and Push** - Builds and pushes the validated image to Docker Hub
+## Vagrant Setup Steps
 
-### Self-Hosted Runner Setup
-
-The pipeline runs on a self-hosted GitHub runner for better control and performance.
-
-#### Setting up Self-Hosted Runner:
-
-1. Navigate to your GitHub repository settings
-2. Go to **Settings > Actions > Runners**
-3. Click **New self-hosted runner**
-4. Choose your operating system (macOS/Windows/Linux)
-5. Follow the installation commands provided by GitHub
-6. Execute the runner:
-   ```bash
-   ./run.sh
-   ```
-7. Verify the runner appears as "Active" in your GitHub repository settings
-
-### Pipeline Triggers
-
-The CI pipeline is configured to trigger in the following scenarios:
-
-- **Branch-specific pushes**: Only triggers when code is pushed to the `setup-a-ci-pipeline4` branch
-- **Manual trigger**: Developers can manually trigger the pipeline using the `workflow_dispatch` event from the GitHub Actions UI
-
-### Required GitHub Secrets
-
-Configure the following secrets in your GitHub repository settings (**Settings > Secrets and variables > Actions**):
-
-- `DOCKER_USERNAME` - Your Docker Hub username
-- `DOCKER_PASSWORD` - Your Docker Hub password or access token
-- `POSTGRES_DB` - PostgreSQL database name
-- `POSTGRES_USER` - PostgreSQL username
-- `POSTGRES_PASSWORD` - PostgreSQL password
-- `POSTGRES_HOST_AUTH_METHOD` - PostgreSQL authentication method
-- `DB_HOST` - Database host
-- `DB_PORT` - Database port
-- `DB_NAME` - Database name
-- `DB_USER` - Database user
-- `DB_PASSWORD` - Database password
-
-### Makefile Integration
-
-The CI pipeline utilizes Makefile targets for consistent automation:
+### 1. Start Vagrant Environment
 
 ```bash
-# Build the Docker image
-make docker-build
-
-# Run API tests
-make test
-
-# Perform code linting
-make lint
-
-# Push image to Docker Hub
-make docker-push
+# To Start the Vagrant
+vagrant up
 ```
 
-### Pipeline Benefits
+### 2. SSH into Vagrant VM
 
-- **Automated Quality Checks**: Every code push triggers automated testing and linting
-- **Consistent Builds**: Docker ensures the same environment across all stages
-- **Fail-Fast Approach**: Pipeline stops on first failure, preventing bad code from progressing
-- **Manual Control**: Developers can manually trigger builds when needed
-- **Branch Protection**: Only specific branches trigger the pipeline, preventing unnecessary runs
+```bash
+# To get inside the Vagrant
+vagrant ssh
+```
+
+### 3. Navigate to Project Directory
+
+```bash
+cd /vagrant
+```
+
+### 4. Deploy Load Balanced Application
+
+```bash
+# do vagrant ssh and then run the below command
+docker-compose up --build -d
+```
+
+### 5. Verify All Services Running
+
+```bash
+# Check container status
+docker ps
+
+# Expected output: 4 containers running
+# - postgres (student_db)
+# - flask-app1 (student_api_1)
+# - flask-app2 (student_api_2)
+# - nginx (nginx_contanier_reverse_proxy)
+```
+
+### Vagrant Commands Reference:
+
+```bash
+vagrant up          # Start the virtual machine
+vagrant ssh         # SSH into the VM
+vagrant halt        # Stop the VM
+vagrant destroy     # Remove the VM completely
+vagrant status      # Check VM status
+vagrant reload      # Restart VM with new Vagrantfile config
+```
+
+```bash
+# View all running services
+docker-compose ps
+
+# Service logs
+docker logs student_api_1                    # Flask instance 1
+docker logs student_api_2                    # Flask instance 2
+docker logs nginx_contanier_reverse_proxy    # Nginx load balancer
+docker logs student_db                       # PostgreSQL database
+```
+
+### Load Balancing Verification:
+
+#### Monitor Nginx Access Logs:
+
+```bash
+# Watch nginx logs in real-time
+docker logs -f nginx_contanier_reverse_proxy
+```
+
+#### Monitor Individual Flask Instances:
+
+```bash
+docker logs -f student_api_1
+docker logs -f student_api_2
+```
 
 ## Testing the API
 
@@ -358,42 +605,96 @@ You can test the API using the following methods:
 ### 2. Using cURL
 Here are some example cURL commands:
 
-**Health Check**
+**Health Check (Load Balanced)**
 ```bash
-curl http://localhost:5000/api/v1/healthcheck
+curl http://localhost:8080/api/v1/healthcheck
 ```
 
-**Get All Students**
+**Get All Students (Load Balanced)**
 ```bash
-curl http://localhost:5000/api/v1/students
+curl http://localhost:8080/api/v1/students
 ```
 
-**Create Student**
+**Create Student (Load Balanced)**
 ```bash
-curl -X POST http://localhost:5000/api/v1/students \
+curl -X POST http://localhost:8080/api/v1/students \
   -H "Content-Type: application/json" \
-  -d '{"name": "John Doe", "email": "john@example.com", "age": 20}'
+  -d '{"name": "abc", "email": "abc@example.com", "age": 20}'
 ```
+### 3. Using Browser 
+- **Load Balanced Health Check**: Visit http://localhost:8080/api/v1/healthcheck
+- **Load Balanced Student List**: Visit http://localhost:8080/api/v1/students
+- **Direct Flask 1 Access**: Visit http://localhost:8081/api/v1/healthcheck
+- **Direct Flask 2 Access**: Visit http://localhost:8082/api/v1/healthcheck
 
-### 3. Using Browser
-- Health Check: Visit http://localhost:5000/api/v1/healthcheck
-- Get All Students: Visit http://localhost:5000/api/v1/students
-- Note: Browser only supports GET requests directly. For POST, PUT, DELETE operations, use Postman or cURL.
+**Note**: 
+- Browser only supports GET requests directly. For POST, PUT, DELETE operations, use Postman or cURL.
+- Refresh the load balanced URL multiple times to observe requests being distributed between Flask instances.
 
-### 4. Automated Testing
-The project includes automated tests that run as part of the CI pipeline:
+---
 
+##  Troubleshooting
+
+### Common Issues & Solutions:
+
+#### 1. Nginx 502 Bad Gateway
+**Problem**: Cannot access http://localhost:8080  
+**Symptoms**: "502 Bad Gateway" error in browser
+
+**Solutions**:
 ```bash
-# Run tests locally
-cd tests
-python3 test_students.py -v
+# Check if all containers are running
+docker ps
 
-# Or using make command
-make test
+# Restart nginx container
+docker-compose restart nginx
+
+# Verify nginx configuration is loaded
+docker exec nginx_contanier_reverse_proxy cat /etc/nginx/nginx.conf
+
+# Check nginx error logs
+docker logs nginx_contanier_reverse_proxy
+```
+#### 2. Load Balancing Not Working
+**Problem**: All requests go to same Flask instance  
+**Symptoms**: Only one Flask container shows activity in logs
+
+**Solutions**:
+```bash
+# Test individual Flask instances
+curl http://localhost:8081/api/v1/healthcheck
+curl http://localhost:8082/api/v1/healthcheck
+
+# Restart all services
+docker-compose down && docker-compose up -d
+
+# Check nginx upstream configuration
+docker exec nginx_contanier_reverse_proxy nginx -t
 ```
 
-The automated tests verify:
-- Health check endpoint functionality
-- CRUD operations for students
-- API response formats and status codes
-- Database connectivity and data persistence
+#### 3. Vagrant VM Issues
+**Problem**: VM won't start or SSH fails  
+**Symptoms**: `vagrant up` fails or `vagrant ssh` connection refused
+
+**Solutions**:
+```bash
+# Check VM status
+vagrant status
+
+# Restart VM
+vagrant halt && vagrant up
+
+# Rebuild VM completely (if corrupted)
+vagrant destroy && vagrant up
+```
+
+### Debug Commands:
+```bash
+# Container network inspection
+docker network ls
+docker network inspect devops-bootcamp-assignments_default
+
+# Container inspection
+docker inspect nginx_contanier_reverse_proxy
+docker inspect student_api_1
+```
