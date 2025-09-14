@@ -17,8 +17,15 @@ jobs:
       - name: Build API
         run: make build
 
+      - name: Deploy containers
+        run: make deploy
+
       - name: Run tests
         run: make test
+
+      - name: Cleanup containers
+        run: make cleanup
+        if: always()
 
       - name: Code linting
         run: make lint

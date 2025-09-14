@@ -1,4 +1,4 @@
-.PHONY: run migrate clean help build test lint docker-login docker-push ci
+.PHONY: run migrate clean help build deploy test cleanup lint docker-login docker-push ci
 
 # Variables
 VENV := venv
@@ -16,11 +16,17 @@ build:
 # Deploy containers for testing
 deploy:
 	docker-compose up -d --build
+	@echo "Waiting for application to be ready..."
+	sleep 15
 
 # Run tests
 test:
-#	pip install requests
+	pip install requests
 	cd tests && python3 test_students.py -v
+
+# Clean up containers after testing
+cleanup:
+	docker-compose down --remove-orphans || true
 
 # Perform code linting
 lint:
@@ -36,7 +42,7 @@ docker-push:
 	docker push $(DOCKER_USERNAME)/devops-bootcamp-assignments-flask-app:latest
 
 # All CI stages
-ci: build test lint docker-login docker-push
+ci: build deploy test cleanup lint docker-login docker-push
 
 # # Set up the virtual environment and install dependencies
 # setup:
