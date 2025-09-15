@@ -3,7 +3,6 @@ name: ci-pipeline
 on:
   push:
     branches:
-      - feature/setup-a-ci-pipeline-04
       - main
 
   workflow_dispatch:
@@ -18,8 +17,26 @@ jobs:
       - name: Build API
         run: make build
 
+      - name: Deploy containers
+        run: make deploy
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB || 'student_db' }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER || 'postgres' }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_HOST_AUTH_METHOD: ${{ secrets.POSTGRES_HOST_AUTH_METHOD || 'trust' }}
+          DB_HOST: ${{ secrets.DB_HOST || 'postgres' }}
+          DB_PORT: ${{ secrets.DB_PORT || '5432' }}
+          DB_NAME: ${{ secrets.DB_NAME || 'student_db' }}
+          DB_USER: ${{ secrets.DB_USER || 'postgres' }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
       - name: Run tests
         run: make test
+
+      - name: Cleanup containers
+        run: make cleanup
+        if: always()
 
       - name: Code linting
         run: make lint
@@ -34,5 +51,3 @@ jobs:
         run: make docker-push
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      
-

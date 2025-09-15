@@ -66,8 +66,5 @@ htmlcov/
 .coverage
 .coverage.*
 coverage.xml
-
-#Dot Vagrantfile
-.vagrant/
-.vagrant
-.Vagrant
+*.token
+vault-tokens.txt

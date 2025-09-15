@@ -1,23 +1,38 @@
 ## Table of Contents
+- [Kubernetes Deployment with Vault Secret Management](#kubernetes-deployment-with-vault-secret-management)
 - [Problem Statement](#problem-statement)
 - [What This Repository Solves](#what-this-repository-solves)
 - [Features](#features)
 - [Tools & Technologies Used](#tools--technologies-used)
 - [Project Structure](#project-structure)
 - [API Endpoints Overview](#api-endpoints-overview)
-- [Setup Instructions](#setup-instructions)
+- [Kubernetes Setup](#kubernetes-setup)
+- [Docker Compose Setup Instructions](#docker-compose-setup-instructions)
 - [UTM Vagrant Deployment](#utm-vagrant-deployment)
-- [Assignment 5 Service URLs](#assignment-5-service-urls)
-- [Assignment 5 Testing](#assignment-5-testing)
+- [Service URLs](#service-urls)
+- [Testing](#testing)
 - [Testing the API](#testing-the-api)
+
+# Kubernetes Deployment with Vault Secret Management
+
+This demonstrates secret management by deploying the Flask Student API on Kubernetes with HashiCorp Vault and External Secrets Operator. The setup includes production-ready configurations with persistent storage, proper authentication, and automated secret synchronization.
+
+
+## Kubernetes Problem Statement
+Modern cloud-native applications require secure secret management at scale. This implementation focuses on enterprise-grade secret management using HashiCorp Vault integrated with Kubernetes through the External Secrets Operator. The challenge is to deploy a Flask API with PostgreSQL backend while ensuring all sensitive data (database credentials, API keys) are securely managed through Vault's centralized secret store, eliminating hardcoded secrets from application manifests.
+
+## Kubernetes Features
+- ** Secret Management**: HashiCorp Vault with production configuration and persistent storage
+- **Automated Secret Sync**: External Secrets Operator automatically syncs secrets from Vault to Kubernetes
+- **Database Persistence**: PostgreSQL with persistent volumes for data durability
+- **Production Ready**: Vault runs in production mode with manual initialization and unsealing
 
 #  Deploy the Flask Application On Bare Metal UTM Vagrant Using Nginx as Reverse Proxy
 
-Assignment 5 builds on Assignment 4. Here the flask application is deployed on bare metal UTM vagrant. Two API containers are created and nginx is used as a reverse proxy load balancer between the two flask applications. Both of these flask applications are connected to the PostgreSQL container. 
-
+This builds on the previous containerized deployment. Here the flask application is deployed on bare metal UTM vagrant. Two API containers are created and nginx is used as a reverse proxy load balancer between the two flask applications. Both of these flask applications are connected to the PostgreSQL container.
 
 ## Problem Statement
-As applications grow and user traffic increases, a single server instance becomes a bottleneck and single point of failure. Assignment 5 aims to simulate a real-world scenario where you implement **load balancing** for a containerized RESTful API. The challenge is to distribute incoming requests across multiple Flask application instances using Nginx as a reverse proxy, while maintaining data consistency through a shared PostgreSQL database. This setup demonstrates high availability concepts and prepares the application for production-scale traffic using UTM Vagrant as a bare metal virtualization platform. 
+As applications grow and user traffic increases, a single server instance becomes a bottleneck and single point of failure. This implementation simulates a real-world scenario where you implement **load balancing** for a containerized RESTful API. The challenge is to distribute incoming requests across multiple Flask application instances using Nginx as a reverse proxy, while maintaining data consistency through a shared PostgreSQL database. This setup demonstrates high availability concepts and prepares the application for production-scale traffic using UTM Vagrant as a bare metal virtualization platform. 
 
 ## What This Repository Solves
 This repository demonstrates how to implement load balancing for a Flask REST API using Nginx as a reverse proxy. 
@@ -38,7 +53,7 @@ The Student REST API supports the following CRUD operations:
 - Update existing student information.
 - Delete a student record.
 
-### Assignment 5 Infrastructure Features:
+### Infrastructure Features:
 - **Load Balancing**: Nginx reverse proxy distributes requests across multiple Flask instances
 - **High Availability**: If one Flask instance fails, requests continue through the other instance
 - **Bare Metal Virtualization**: Deployment on UTM Vagrant virtual machine
@@ -52,6 +67,9 @@ The Student REST API supports the following CRUD operations:
 - **PostgreSQL** – Relational database to store student records
 - **Docker** – Containerization platform
 - **Docker Compose** – Container orchestration for local development
+- **Minikube Kubernetes** – Container orchestration platform for cloud-native deployment
+- **HashiCorp Vault** – Enterprise secret management and data protection
+- **External Secrets Operator** – Kubernetes operator for syncing secrets from external systems
 - **PIP** – Python package manager
 - **GIT** – Version control system
 - **Makefile** – To automate tasks like running the server, migrations, etc.
@@ -82,6 +100,11 @@ The Student REST API supports the following CRUD operations:
 │   └── views/
 │       ├── __init__.py
 │       └── student_views.py
+├── k8s/
+│   ├── application.yml
+│   ├── database.yml
+│   ├── external-secrets.yml
+│   └── vault.yml
 ├── migrations/
 │   └── 001_create_students_table.sql
 ├── tests/
@@ -100,27 +123,12 @@ The Student REST API supports the following CRUD operations:
 
 
 ```
-
-## Project Structure Explanation:
-1. The `.github/workflows/` directory contains the CI pipeline configuration
-2. The `app/` directory contains the MVC components:
-   - `controllers/`: Contains `student_controller.py` that handles the business logic
-   - `models/`: Contains `student.py` that defines the data structure and database operations
-   - `views/`: Contains `student_views.py` that manages the API endpoints and request/response handling
-   - `utils/`: Contains `database.py` for database connection management
-2. The `main.py` is the entry point of the Flask application.
-3. The `requirements.txt` lists all dependencies needed to run the project.
-4. The `migrations/001_create_students_table.sql` file defines the database schema migration.
-5. The `.env.example` file provides a template for database credentials (copy to `.env` locally).
-6. The `Makefile` automates processes like setting up the virtual environment, running the Flask app, and applying migrations.
-7. The `migrate.sh` script handles the database migration process.
-8. The `Student_API_MVC_Collection.json` file contains predefined API requests for testing.
-9. The `Dockerfile` provides the multi-stage dockerfile script, used for creating the container image.
-10. The `docker-compose.yml` file has script to start both the flask and the postgres container
-11. The `Vagranatfile` has instructions to virtual machines, create and cofigure network, allot memory, cpu, etc.
-12. The `provision.sh` has bash setup commands that installs docker, docker compose and make.
-13. The `nginx.conf` has the reverse proxy script that does load balancing between two api containers and lets them connect to the postgreSql
-14. The `README.md` file provides setup and usage instructions. 
+## Key Components:
+- **`app/`**: MVC architecture with controllers, models, views, and utilities
+- **`k8s/`**: Kubernetes manifests for Vault, External Secrets, database, and application deployment
+- **`migrations/`**: SQL database schema files
+- **`docker-compose.yml`**: Multi-container setup with load balancing
+- **`Vagrantfile`**: UTM Vagrant configuration for bare metal deployment 
 
 ## Load Balanced API Access if Using UTM Vagrant
 All endpoints are now accessible through the Nginx reverse proxy:
@@ -139,7 +147,125 @@ All endpoints are prefixed with `/api/v1/students`.
 - `PUT /api/v1/students/<id>` – Update an existing student's info
 - `DELETE /api/v1/students/<id>` – Delete a student
 
-# Flask Student API Setup Instructions - Local Setup & Docker Setup 
+# Kubernetes Setup
+
+This section covers the enterprise-grade Kubernetes deployment with HashiCorp Vault secret management.
+
+## Prerequisites
+- Kubernetes cluster (minikube, kind, or cloud provider)
+- kubectl configured to access your cluster
+- Helm (for installing External Secrets Operator)
+
+## Deployment Steps
+
+### 1. Install External Secrets Operator
+
+```bash
+# Add External Secrets Operator Helm repository
+helm repo add external-secrets https://charts.external-secrets.io
+
+# All services are deployed via YAML files (no separate Helm install needed)
+```
+
+### 2. Deploy Vault
+
+```bash
+# Deploy Vault with production configuration
+kubectl apply -f k8s/vault.yml
+```
+
+### 4. Deploy Services
+
+```bash
+# Deploy all services
+kubectl apply -f k8s/external-secrets.yml
+kubectl apply -f k8s/database.yml
+kubectl apply -f k8s/application.yml
+
+
+## Access Services
+
+### Port Forward for Local Access
+
+```bash
+# Flask API
+kubectl port-forward svc/student-api-service 5000:5000
+
+# Vault UI
+kubectl port-forward svc/vault 8200:8200
+
+
+```
+
+### Service URLs
+- **Flask API**: http://localhost:5000/api/v1/students
+- **Health Check**: http://localhost:5000/api/v1/healthcheck  
+- **Vault UI**: http://localhost:8200
+
+## Verification
+
+### Check Pod Status
+```bash
+kubectl get pods
+```
+
+### Check External Secret Status
+```bash
+kubectl get externalsecrets
+kubectl get secrets database-secret
+```
+
+### Test API Endpoints
+```bash
+# Health check
+curl http://localhost:5000/api/v1/healthcheck
+
+# Get all students
+curl http://localhost:5000/api/v1/students
+```
+
+### Vault Operations
+```bash
+# Check Vault status
+kubectl exec vault-0 -- vault status
+
+# View secrets in Vault UI at http://localhost:8200
+# Login with root token
+```
+
+## Troubleshooting
+
+### Common Issues
+
+**External Secret Not Syncing**:
+```bash
+kubectl describe externalsecret database-external-secret
+kubectl logs -l app=external-secrets-operator -n external-secrets
+```
+
+**Vault Sealed**:
+```bash
+kubectl exec vault-0 -- vault status
+# If sealed, run unseal commands again
+```
+
+**Application Connection Issues**:
+```bash
+kubectl logs -l app=student-api
+kubectl describe pod -l app=student-api
+```
+
+# Docker Compose Setup Instructions
+
+## Flask Student API Setup Instructions - Local Setup & Docker Setup 
+
+## Local Setup (Without Docker)
+
+This section describes how to set up and run the **Flask Student API** on your local machine without Docker.  
+
+You'll need **Python**, **PostgreSQL**, and other tools mentioned in the prerequisite section.
+
+# Flask Student API Setup Instructions - Local Setup & Docker Setup
 
 ## Local Setup (Without Docker)
 
@@ -261,7 +387,6 @@ docker-compose ps
 Check application logs:
 ```bash
 docker-compose logs flask-app
-
 
 ```
 
@@ -462,7 +587,6 @@ docker exec nginx_contanier_reverse_proxy cat /etc/nginx/nginx.conf
 # Check nginx error logs
 docker logs nginx_contanier_reverse_proxy
 ```
-
 #### 2. Load Balancing Not Working
 **Problem**: All requests go to same Flask instance  
 **Symptoms**: Only one Flask container shows activity in logs
@@ -505,7 +629,4 @@ docker network inspect devops-bootcamp-assignments_default
 # Container inspection
 docker inspect nginx_contanier_reverse_proxy
 docker inspect student_api_1
-
-# Resource monitoring
-docker stats --format "table {{.Container}}\t{{.CPUPerc}}\t{{.MemUsage}}"
 ```
