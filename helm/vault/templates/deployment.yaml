@@ -1,8 +1,10 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: vault
+  namespace: vault
 spec:
+  serviceName: vault-headless
   selector:
     matchLabels:
       app: vault
@@ -14,9 +16,23 @@ spec:
       containers:
       - name: vault
         image: {{ .Values.vault.image }}
-        env:
-        - name: VAULT_DEV_ROOT_TOKEN_ID
-          value: {{ .Values.vault.rootToken }}
-        command: ["vault", "server", "-dev"]
+        command: ["vault", "server", "-config", "/vault/config/vault.hcl"]
+        volumeMounts:
+        - name: vault-config
+          mountPath: /vault/config
+        - name: vault-data
+          mountPath: /vault/data
         ports:
         - containerPort: {{ .Values.vault.port }}
+      volumes:
+      - name: vault-config
+        configMap:
+          name: vault-config
+  volumeClaimTemplates:
+  - metadata:
+      name: vault-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: {{ .Values.vault.storage.size }}

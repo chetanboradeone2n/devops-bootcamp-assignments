@@ -1,16 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: external-secrets
+  name: {{ .Values.serviceAccount.name }}
+  namespace: {{ .Values.serviceAccount.namespace }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: external-secrets
+      app: {{ .Values.serviceAccount.name }}
   template:
     metadata:
       labels:
-        app: external-secrets
+        app: {{ .Values.serviceAccount.name }}
     spec:
       serviceAccountName: {{ .Values.serviceAccount.name }}
       containers:

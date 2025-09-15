@@ -2,3 +2,7 @@ postgres:
   image: postgres:17
   database: student_db
   user: postgres
+  storage:
+    size: 1Gi
+  persistence:
+    dataDir: /var/lib/postgresql/data
