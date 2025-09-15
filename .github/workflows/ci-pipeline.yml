@@ -1,0 +1,53 @@
+name: ci-pipeline
+
+on:
+  push:
+    branches:
+      - feature/deploy_rest_api_on_k8s_heml-08
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ["self-hosted", "macOS", "ARM64"]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Build API
+        run: make build
+
+      - name: Deploy containers
+        run: make deploy
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB || 'student_db' }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER || 'postgres' }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_HOST_AUTH_METHOD: ${{ secrets.POSTGRES_HOST_AUTH_METHOD || 'trust' }}
+          DB_HOST: ${{ secrets.DB_HOST || 'postgres' }}
+          DB_PORT: ${{ secrets.DB_PORT || '5432' }}
+          DB_NAME: ${{ secrets.DB_NAME || 'student_db' }}
+          DB_USER: ${{ secrets.DB_USER || 'postgres' }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
+      - name: Run tests
+        run: make test
+
+      - name: Cleanup containers
+        run: make cleanup
+        if: always()
+
+      - name: Code linting
+        run: make lint
+
+      - name: Docker login
+        run: make docker-login
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Docker push
+        run: make docker-push
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
