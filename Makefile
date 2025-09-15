@@ -1,4 +1,4 @@
-.PHONY: run migrate clean help build test lint docker-login docker-push ci k8s-deploy k8s-clean k8s-test helm-deploy helm-clean helm-test
+.PHONY: run migrate clean help build deploy test cleanup lint docker-login docker-push ci
 
 # Variables
 VENV := venv
@@ -8,14 +8,25 @@ PIP := $(VENV)/bin/pip
 # Default target
 all: setup run
 
-# Build API
+# Build Docker image only (CI-friendly)
 build:
+	docker build -t devops-bootcamp-assignments-flask-app .
+	sleep 30
+
+# Deploy containers for testing
+deploy:
 	docker-compose up -d --build
+	@echo "Waiting for application to be ready..."
+	sleep 15
 
 # Run tests
 test:
-	pip install requests
+	pip3 install requests
 	cd tests && python3 test_students.py -v
+
+# Clean up containers after testing
+cleanup:
+	docker-compose down --remove-orphans || true
 
 # Perform code linting
 lint:
@@ -27,60 +38,43 @@ docker-login:
 
 # Docker build and push
 docker-push:
+	docker tag devops-bootcamp-assignments-flask-app:latest $(DOCKER_USERNAME)/devops-bootcamp-assignments-flask-app:latest
 	docker push $(DOCKER_USERNAME)/devops-bootcamp-assignments-flask-app:latest
 
 # All CI stages
-ci: build test lint docker-login docker-push
+ci: build deploy test cleanup lint docker-login docker-push
 
-# Helm deployment
-helm-deploy:
-	helm install external-secrets helm/external-secrets --namespace external-secrets --create-namespace
-	helm install vault helm/vault --namespace vault --create-namespace
-	helm install postgresql helm/postgresql --namespace student-api --create-namespace
-	helm install student-api helm/student-api --namespace student-api
+# # Set up the virtual environment and install dependencies
+# setup:
+# 	python3 -m venv $(VENV)
+# 	$(PIP) install -r requirements.txt
 
-# Clean up Helm resources
-helm-clean:
-	helm uninstall student-api --namespace student-api --ignore-not-found
-	helm uninstall postgresql --namespace student-api --ignore-not-found
-	helm uninstall vault --namespace vault --ignore-not-found
-	helm uninstall external-secrets --namespace external-secrets --ignore-not-found
+# # Run the Flask applicatio.n
+# run:
+# 	$(PYTHON) main.py
 
-# Test Helm deployment
-helm-test:
-	@echo "Testing API endpoints..."
-	@kubectl port-forward -n student-api service/flask-app-service 5000:5000 &
-	@sleep 3
-	@echo "Health check: $$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5000/api/v1/healthcheck)"
-	@echo "Get students: $$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5000/api/v1/students)"
-	@pkill -f "kubectl port-forward" || true
+# # Apply database migrations
 
-# Kubernetes deployment (legacy)
-k8s-deploy:
-	kubectl apply -f k8s/
+# migrate:
+# 	@if [ ! -f .env ]; then echo "Error: .env file not found"; exit 1; fi
+# 	@export $(cat .env | xargs); \
+# 	if [ -z "$DB_HOST" ] || [ -z "$DB_USER" ] || [ -z "$DB_NAME" ] || [ -z "$DB_PASSWORD" ]; then \
+# 		echo "Error: Environment variables DB_HOST, DB_USER, DB_NAME, and DB_PASSWORD must be set"; exit 1; \
+# 	fi; \
+# 	echo "Creating database if it doesn't exist..."; \
+# 	psql -h "$DB_HOST" -U "$DB_USER" -d postgres -c "CREATE DATABASE IF NOT EXISTS $DB_NAME;" || { echo "Failed to create database"; exit 1; }; \
+# 	echo "Applying migration to create students table..."; \
+# 	psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" -f migrations/001_create_students_table.sql || { echo "Migration failed"; exit 1; }; \
+# 	echo "Migration completed successfully."
+# # Clean up (remove virtual environment)
+# clean:
+# 	rm -rf $(VENV)
 
-# Clean up Kubernetes resources (legacy)
-k8s-clean:
-	kubectl delete -f k8s/ --ignore-not-found=true
-
-# Test Kubernetes API (legacy)
-k8s-test:
-	@echo "Testing API endpoints..."
-	@kubectl port-forward -n student-api service/flask-app-service 5000:5000 &
-	@sleep 3
-	@echo "Health check: $$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5000/api/v1/healthcheck)"
-	@echo "Get students: $$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5000/api/v1/students)"
-	@pkill -f "kubectl port-forward" || true
-
-# Help
-help:
-	@echo "Available commands:"
-	@echo "  make helm-deploy - Deploy using Helm charts"
-	@echo "  make helm-clean  - Clean up Helm releases"
-	@echo "  make helm-test   - Test Helm deployment"
-	@echo "  make k8s-deploy  - Deploy to Kubernetes (legacy)"
-	@echo "  make k8s-clean   - Clean up Kubernetes resources (legacy)"
-	@echo "  make k8s-test    - Test API endpoints (legacy)"
-	@echo "  make build       - Build with Docker Compose"
-	@echo "  make test        - Run Python tests"
-	@echo "  make lint        - Run code linting"
+# # Help target to display available commands
+# help:
+# 	@echo "Available commands:"
+# 	@echo "  make setup    - Set up the virtual environment and install dependencies"
+# 	@echo "  make run      - Run the Flask application"
+# 	@echo "  make migrate  - Apply database migrations"
+# 	@echo "  make clean    - Remove the virtual environment"
+# 	@echo "  make help     - Show this help message"
