@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blackbox-exporter
+  namespace: observability
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blackbox-exporter
+  template:
+    metadata:
+      labels:
+        app: blackbox-exporter
+    spec:
+      nodeSelector:
+        node-type: "dependent-service"
+      containers:
+      - name: blackbox-exporter
+        image: prom/blackbox-exporter:latest
+        ports:
+        - containerPort: 9115
+        volumeMounts:
+        - name: blackbox-config
+          mountPath: /etc/blackbox_exporter
+      volumes:
+      - name: blackbox-config
+        configMap:
+          name: blackbox-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blackbox-exporter
+  namespace: observability
+spec:
+  selector:
+    app: blackbox-exporter
+  ports:
+  - port: 9115
+    targetPort: 9115
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: blackbox-config
+  namespace: observability
+data:
+  config.yml: |
+    modules:
+      http_2xx:
+        prober: http
+        http:
+          valid_http_versions: ["HTTP/1.1", "HTTP/2.0"]
+          valid_status_codes: []
+          method: GET
