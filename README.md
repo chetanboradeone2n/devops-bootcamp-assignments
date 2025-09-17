@@ -7,18 +7,25 @@
 - [API Endpoints Overview](#api-endpoints-overview)
 - [Setup Instructions](#setup-instructions)
 - [CI/CD Pipeline](#cicd-pipeline)
+- [Observability Stack](#observability-stack)
 - [Testing the API](#testing-the-api)
 
 
-# Assignment 4 - Setup a CI pipeline
+# DevOps Bootcamp Assignments
 
-Assignment 4 - Setup a CI pipeline builds on Assignment 2 & 3 - Setup one-click local development setup, by introducing CI/CD automation for the Student REST API. In this assignment a GitHub Actions workflow is implemented. The pipeline automates building the Docker image, running the application container, testing the API endpoints, performing code linting, and finally pushing the validated image to Docker Hub. This ensures consistent builds, automated quality checks, and streamlined delivery of the application.
+This project shows how to build and deploy a Student REST API with complete monitoring. It starts with a simple Flask app, then adds Docker containers, automated testing, Kubernetes deployment, and a full monitoring system. Everything is automated and includes proper security and monitoring.
 
 ## Problem Statement
 In many projects, CRUD operations are the base for handling data. In Assignment 2 & 3, the Student REST API was containerized with Docker and Docker Compose, connected to a PostgreSQL database, and supported versioned endpoints and migrations. Assignment 4 builds on top of this by adding automation through GitHub Actions. The goal is to set up a CI pipeline that builds Docker images, runs containers, tests the API endpoints, performs code linting, and finally pushes the image to Docker Hub.
 
 ## What This Repository Solves
-This repository demonstrates how to automate the build and test process for a REST API using GitHub Actions. It takes the Student API (Flask + PostgreSQL) and integrates CI steps like building the Docker image, spinning up containers, running endpoint tests, and linting the code. The workflow then pushes the tested and verified image to Docker Hub. This makes the application easier to maintain, portable, and ready for future deployments.
+This project shows how to build a complete application with monitoring:
+- **Automated Building**: GitHub Actions builds and tests the app automatically
+- **Kubernetes Deployment**: Runs the app on Kubernetes using Helm charts
+- **Automated Deployment**: ArgoCD automatically deploys new versions
+- **Secret Management**: Vault keeps passwords and secrets safe
+- **Complete Monitoring**: Tracks app performance, logs, and sends alerts
+- **Security**: Proper permissions and secure configurations
 
 
 ## Features
@@ -35,16 +42,14 @@ The API supports the following operations:
 - **PostgreSQL** – Relational database to store student records
 - **Docker** – Containerization platform
 - **Docker Compose** – Container orchestration for local development
-- **PIP** – Python package manager
-- **GIT** – Version control system
-- **Makefile** – To automate tasks like running the server, migrations, etc.
-- **psycopg2** – PostgreSQL driver for Python
-- **python-dotenv** – To manage environment variables
-- **SQL migration files** – For database schema changes
-- **Postman** – To test API endpoints (collection included)
 - **GitHub Actions** – To automate the Continuous Integration process
+- **Kubernetes** – Container orchestration platform
+- **Helm** – Kubernetes package manager
+- **Prometheus & Grafana** – Monitoring and visualization
+- **Vault** – Secrets management
+- **Makefile** – To automate tasks like running the server, migrations, etc.
 - **ruff** – To perform code linting
-- **Docker Hub** – Container registry for storing Docker images
+- **Postman** – To test API endpoints (collection included)
 
 ## Project Structure
 
@@ -327,6 +332,33 @@ make docker-push
 - **Fail-Fast Approach**: Pipeline stops on first failure, preventing bad code from progressing
 - **Manual Control**: Developers can manually trigger builds when needed
 - **Branch Protection**: Only specific branches trigger the pipeline, preventing unnecessary runs
+
+## Monitoring Setup
+
+The project includes a complete monitoring system that watches the app and sends alerts:
+
+### What's Included
+- **Prometheus** - Collects numbers about how the app is running
+- **Grafana** - Shows charts and graphs of app performance
+- **Loki** - Stores all the app logs in one place
+- **Promtail** - Collects logs from the app containers
+- **Database Monitor** - Watches PostgreSQL database performance
+- **Website Monitor** - Checks if ArgoCD, Vault, and Student API are working
+- **Server Monitor** - Tracks CPU, memory, and disk usage
+- **Kubernetes Monitor** - Watches the Kubernetes cluster health
+
+### What You Can See
+- **5 Dashboards**: Database stats, app logs, server health, Kubernetes status, website uptime
+- **Alerts**: Gets notified when CPU/disk is full, app has errors, or services go down
+- **Slack Messages**: Sends alerts to Slack channel automatically
+- **Secure Setup**: All passwords stored safely in Vault
+
+### How to Deploy
+```bash
+helm install observability ./helm/observability
+```
+
+This monitoring system watches everything and tells you when something goes wrong.
 
 ## Testing the API
 
