@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: observability
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      nodeSelector:
+        node-type: "dependent-service"
+      containers:
+      - name: grafana
+        image: grafana/grafana:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: GF_SECURITY_ADMIN_PASSWORD
+          valueFrom:
+            secretRef:
+              name: grafana-secret
+              key: admin_password
+        volumeMounts:
+        - name: grafana-datasources
+          mountPath: /etc/grafana/provisioning/datasources
+      volumes:
+      - name: grafana-datasources
+        configMap:
+          name: grafana-datasources
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-service
+  namespace: observability
+spec:
+  selector:
+    app: grafana
+  ports:
+  - port: 3000
+    targetPort: 3000
+    nodePort: 30001
+  type: NodePort
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  namespace: observability
+data:
+  datasources.yml: |
+    apiVersion: 1
+    datasources:
+    - name: Prometheus
+      type: prometheus
+      access: proxy
+      url: http://prometheus-service.observability.svc.cluster.local:9090
+      isDefault: true
+    - name: Loki
+      type: loki
+      access: proxy
+      url: http://loki-service.observability.svc.cluster.local:3100
