@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-notification-channels
+  namespace: observability
+data:
+  notification-channels.yml: |
+    notifiers:
+    - name: slack-alerts
+      type: slack
+      uid: slack001
+      settings:
+        url_file: /etc/secrets/webhook_url
+        channel: "#alerts"
+        title: "Grafana Alert"
+        text: "{{ range .Alerts }}{{ .Annotations.summary }}{{ end }}"

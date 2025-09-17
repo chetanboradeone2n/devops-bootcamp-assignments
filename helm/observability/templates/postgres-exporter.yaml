@@ -23,7 +23,7 @@ spec:
         env:
         - name: DATA_SOURCE_NAME
           valueFrom:
-            secretRef:
+            secretKeyRef:
               name: postgres-exporter-secret
               key: data_source_name
 ---
