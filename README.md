@@ -322,7 +322,7 @@ Same as Kubernetes Setup - use port-forwarding or NodePort services to access th
 ## Helm vs Raw Manifests
 - **Raw Manifests** (k8s/ directory): Direct Kubernetes YAML files
 - **Helm Charts** (helm/ directory): Templated, configurable deployments with values.yaml
-
+- 
 # Docker Compose Setup Instructions
 
 ## Flask Student API Setup Instructions - Local Setup & Docker Setup 
