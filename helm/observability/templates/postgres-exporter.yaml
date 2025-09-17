@@ -1,3 +1,20 @@
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: postgres-exporter-secret
+  namespace: observability
+spec:
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+  target:
+    name: postgres-exporter-secret
+  data:
+  - secretKey: data_source_name
+    remoteRef:
+      key: secret/database
+      property: connection_string
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -23,7 +40,7 @@ spec:
         env:
         - name: DATA_SOURCE_NAME
           valueFrom:
-            secretRef:
+            secretKeyRef:
               name: postgres-exporter-secret
               key: data_source_name
 ---
