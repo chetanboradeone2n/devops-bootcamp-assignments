@@ -6,48 +6,8 @@ metadata:
 data:
   alert-rules.yml: |
     groups:
-    - name: resource-alerts
+    - name: basic-alerts
       rules:
-      - alert: HighCPUUsage
-        expr: 100 - (avg(rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
-        for: 5m
-        annotations:
-          summary: "High CPU usage detected"
-      
-      - alert: HighDiskUsage
-        expr: (1 - (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"})) * 100 > 85
-        for: 5m
-        annotations:
-          summary: "High disk usage detected"
-    
-    - name: application-alerts
-      rules:
-      - alert: HighErrorRate
-        expr: increase(http_requests_total{status=~"5.."}[10m]) > 10
-        for: 2m
-        annotations:
-          summary: "High error rate detected"
-      
-      - alert: HighLatency
-        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 0.5
-        for: 5m
-        annotations:
-          summary: "High latency detected"
-      
-      - alert: HighRequestVolume
-        expr: rate(http_requests_total[5m]) > 100
-        for: 5m
-        annotations:
-          summary: "High request volume detected"
-    
-    - name: service-alerts
-      rules:
-      - alert: ServiceRestart
-        expr: increase(kube_pod_container_status_restarts_total{pod=~"(postgres|vault|argocd).*"}[5m]) > 0
-        for: 1m
-        annotations:
-          summary: "Service restarted"
-      
       - alert: ServiceDown
         expr: probe_success == 0
         for: 1m
