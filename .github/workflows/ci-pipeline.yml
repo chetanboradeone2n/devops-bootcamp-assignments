@@ -3,7 +3,7 @@ name: ci-pipeline
 on:
   push:
     branches:
-      - feature/deploy_rest_api_on_k8s_heml-08
+      - main
 
   workflow_dispatch:
 
