@@ -1,0 +1,14 @@
+vault:
+  image: vault:1.15.2
+  port: 8200
+  storage:
+    size: 1Gi
+  config: |
+    storage "file" {
+      path = "/vault/data"
+    }
+    listener "tcp" {
+      address = "0.0.0.0:8200"
+      tls_disable = true
+    }
+    ui = true

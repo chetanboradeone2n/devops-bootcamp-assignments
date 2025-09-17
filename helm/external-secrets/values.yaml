@@ -1,0 +1,21 @@
+image:
+  repository: ghcr.io/external-secrets/external-secrets
+  tag: v0.9.11
+
+replicaCount: 1
+
+serviceAccount:
+  name: external-secrets-operator
+  namespace: external-secrets
+
+vault:
+  address: http://vault.vault.svc.cluster.local:8200
+  path: secret
+  version: v2
+  auth:
+    kubernetes:
+      mountPath: kubernetes
+      role: external-secrets
+
+clusterSecretStore:
+  name: vault-backend

@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: student-api
+  labels:
+    app: student-api
+spec:
+  selector:
+    matchLabels:
+      app: student-api
+  template:
+    metadata:
+      labels:
+        app: student-api
+    spec:
+      initContainers:
+      - name: db-migration
+        image: {{ .Values.migrations.image }}
+        env:
+        - name: PGHOST
+          value: "{{ .Values.db.host }}"
+        - name: PGPORT
+          value: "{{ .Values.db.port }}"
+        - name: PGDATABASE
+          value: "{{ .Values.db.name }}"
+        - name: PGUSER
+          value: "{{ .Values.db.user }}"
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-secret
+              key: username
+        command:
+        - sh
+        - -c
+        - |
+          until pg_isready -h $PGHOST -p $PGPORT -U $PGUSER; do
+            sleep 5
+          done
+          psql -h $PGHOST -p $PGPORT -U $PGUSER -d $PGDATABASE -c "
+          CREATE TABLE IF NOT EXISTS students (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            email VARCHAR(255) UNIQUE NOT NULL,
+            age INTEGER
+          );"
+      containers:
+      - name: student-api
+        image: {{ .Values.image }}
+        env:
+        - name: DB_HOST
+          value: "{{ .Values.db.host }}"
+        - name: DB_PORT
+          value: "{{ .Values.db.port }}"
+        - name: DB_NAME
+          value: "{{ .Values.db.name }}"
+        - name: DB_USER
+          value: "{{ .Values.db.user }}"
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-secret
+              key: password
+        ports:
+        - containerPort: 5000
+ 

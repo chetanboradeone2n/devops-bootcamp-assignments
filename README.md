@@ -7,6 +7,7 @@
 - [Project Structure](#project-structure)
 - [API Endpoints Overview](#api-endpoints-overview)
 - [Kubernetes Setup](#kubernetes-setup)
+- [Helm Chart Deployment](#helm-chart-deployment)
 - [Docker Compose Setup Instructions](#docker-compose-setup-instructions)
 - [UTM Vagrant Deployment](#utm-vagrant-deployment)
 - [Service URLs](#service-urls)
@@ -26,6 +27,17 @@ Modern cloud-native applications require secure secret management at scale. This
 - **Automated Secret Sync**: External Secrets Operator automatically syncs secrets from Vault to Kubernetes
 - **Database Persistence**: PostgreSQL with persistent volumes for data durability
 - **Production Ready**: Vault runs in production mode with manual initialization and unsealing
+
+# Helm Chart Deployment
+
+Created Helm charts to deploy the Flask Student API on Kubernetes. Helm makes it easier to manage deployments by using templates instead of writing separate YAML files for each environment.
+
+
+## What's Included
+- **Flask API chart**: Main application deployment
+- **PostgreSQL chart**: Database with persistent storage
+- **Vault chart**: Secret management
+- **External Secrets chart**: Connects Vault to Kubernetes
 
 #  Deploy the Flask Application On Bare Metal UTM Vagrant Using Nginx as Reverse Proxy
 
@@ -70,6 +82,7 @@ The Student REST API supports the following CRUD operations:
 - **Minikube Kubernetes** – Container orchestration platform for cloud-native deployment
 - **HashiCorp Vault** – Enterprise secret management and data protection
 - **External Secrets Operator** – Kubernetes operator for syncing secrets from external systems
+- **Helm** – Kubernetes package manager for templating and deployment management
 - **PIP** – Python package manager
 - **GIT** – Version control system
 - **Makefile** – To automate tasks like running the server, migrations, etc.
@@ -100,6 +113,11 @@ The Student REST API supports the following CRUD operations:
 │   └── views/
 │       ├── __init__.py
 │       └── student_views.py
+├── helm/
+│   ├── external-secrets/
+│   ├── postgresql/
+│   ├── student-api/
+│   └── vault/
 ├── k8s/
 │   ├── application.yml
 │   ├── database.yml
@@ -125,6 +143,7 @@ The Student REST API supports the following CRUD operations:
 ```
 ## Key Components:
 - **`app/`**: MVC architecture with controllers, models, views, and utilities
+- **`helm/`**: Helm charts for templated Kubernetes deployments
 - **`k8s/`**: Kubernetes manifests for Vault, External Secrets, database, and application deployment
 - **`migrations/`**: SQL database schema files
 - **`docker-compose.yml`**: Multi-container setup with load balancing
@@ -163,8 +182,6 @@ This section covers the enterprise-grade Kubernetes deployment with HashiCorp Va
 ```bash
 # Add External Secrets Operator Helm repository
 helm repo add external-secrets https://charts.external-secrets.io
-
-# All services are deployed via YAML files (no separate Helm install needed)
 ```
 
 ### 2. Deploy Vault
@@ -255,6 +272,57 @@ kubectl logs -l app=student-api
 kubectl describe pod -l app=student-api
 ```
 
+# Helm Chart Deployment
+
+This section covers deployment using Helm charts for better configuration management and templating. Helm charts provide a more maintainable approach compared to raw Kubernetes manifests.
+
+## Prerequisites
+- minikube cluster running
+- Helm
+- kubectl configured to access your cluster
+
+## Available Helm Charts
+- **`student-api/`**: Main Flask application chart
+- **`postgresql/`**: Database chart with persistent storage
+- **`vault/`**: HashiCorp Vault chart
+- **`external-secrets/`**: External Secrets Operator chart
+
+## Deployment Steps
+
+### 1. Deploy Infrastructure Charts
+```bash
+# Deploy Vault
+helm install vault ./helm/vault
+
+# Deploy PostgreSQL  
+helm install postgresql ./helm/postgresql
+
+# Deploy External Secrets Operator
+helm install external-secrets ./helm/external-secrets
+```
+
+### 2. Deploy Application
+```bash
+# Deploy Student API
+helm install student-api ./helm/student-api
+```
+
+### 3. Verify Deployment
+```bash
+# Check all Helm releases
+helm list
+
+# Check pod status
+kubectl get pods
+```
+
+### 4. Access Services
+Same as Kubernetes Setup - use port-forwarding or NodePort services to access the Flask API.
+
+## Helm vs Raw Manifests
+- **Raw Manifests** (k8s/ directory): Direct Kubernetes YAML files
+- **Helm Charts** (helm/ directory): Templated, configurable deployments with values.yaml
+- 
 # Docker Compose Setup Instructions
 
 ## Flask Student API Setup Instructions - Local Setup & Docker Setup 
