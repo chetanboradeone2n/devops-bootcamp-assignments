@@ -1,0 +1,5 @@
+namespace: observability
+
+nodeSelector:
+  dependentService: "dependent-service"
+  database: "database"
